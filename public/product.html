@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — Mercado Goods</title>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Assistant:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --cream: #f5eedd; --orange: #cb6305; --orange-dim: rgba(203,99,5,0.4);
+      --navy: #08264b; --cream-50: rgba(245,238,221,0.5); --cream-30: rgba(245,238,221,0.3);
+      --cream-15: rgba(245,238,221,0.15); --cream-08: rgba(245,238,221,0.08);
+      --cream-04: rgba(245,238,221,0.04);
+      --display: 'UnifrakturMaguntia', cursive; --body: 'Assistant', sans-serif;
+      --serif: 'Cormorant Garamond', serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--cream); font-family: var(--body); font-weight: 300; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 9999; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat; background-size: 256px 256px;
+    }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,10,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(245,238,221,0.06); transition: background 0.5s ease; }
+    nav.scrolled { background: rgba(10,10,10,0.92); }
+    .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .nav-logo img { height: 40px; width: auto; filter: brightness(1.3) sepia(0.2); transition: filter 0.3s ease; }
+    .nav-logo:hover img { filter: brightness(1.5) sepia(0.3); }
+    .nav-logo-text { font-family: var(--display); font-size: 1.4rem; color: var(--cream); letter-spacing: 1px; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: var(--cream); text-decoration: none; font-size: 0.82rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; transition: color 0.3s ease; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--orange); transition: width 0.3s ease; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cart-wrap { position: relative; cursor: pointer; }
+    .nav-cart { width: 20px; height: 20px; stroke: var(--cream-50); transition: stroke 0.3s ease; cursor: pointer; }
+    .nav-cart:hover { stroke: var(--cream); }
+    .cart-badge { position: absolute; top: -8px; right: -10px; width: 18px; height: 18px; background: var(--orange); color: var(--black); font-size: 0.65rem; font-weight: 700; border-radius: 50%; display: none; align-items: center; justify-content: center; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { width: 24px; height: 1.5px; background: var(--cream); }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: rgba(10,10,10,0.97); backdrop-filter: blur(30px); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 36px; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a { font-family: var(--display); font-size: 2rem; color: var(--cream); text-decoration: none; }
+    .mobile-menu a:hover { color: var(--orange); }
+    .mobile-close { position: absolute; top: 24px; right: 48px; background: none; border: none; color: var(--cream); font-size: 2rem; cursor: pointer; }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      padding: 120px 80px 20px;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--cream-30);
+    }
+    .breadcrumb a { color: var(--cream-50); text-decoration: none; transition: color 0.3s ease; }
+    .breadcrumb a:hover { color: var(--orange); }
+    .breadcrumb span { margin: 0 8px; }
+
+    /* PRODUCT DETAIL */
+    .product-detail-section {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      padding: 40px 80px 120px; align-items: start;
+    }
+    .product-gallery { }
+    .gallery-main {
+      position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden;
+      background: var(--cream-04); margin-bottom: 16px;
+    }
+    .gallery-main img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: opacity 0.5s ease;
+    }
+    .gallery-thumbs { display: flex; gap: 12px; }
+    .gallery-thumb {
+      width: 80px; height: 100px; overflow: hidden; cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.3s ease;
+      background: var(--cream-04);
+    }
+    .gallery-thumb.active { border-color: var(--orange); }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .product-info-panel { padding-top: 20px; }
+    .product-info-panel .product-title {
+      font-family: var(--display); font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.3; margin-bottom: 16px;
+    }
+    .product-info-panel .product-price-large {
+      font-size: 1.8rem; font-weight: 700; color: var(--cream); letter-spacing: 2px; margin-bottom: 24px;
+    }
+    .product-info-panel .product-desc {
+      font-family: var(--serif); font-size: 1.1rem; font-style: italic; color: var(--cream-50);
+      line-height: 1.8; margin-bottom: 36px;
+    }
+
+    .size-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--cream-50); margin-bottom: 12px;
+    }
+    .size-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .size-btn {
+      width: 52px; height: 44px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--body); font-size: 0.78rem; font-weight: 700; letter-spacing: 1px;
+      color: var(--cream-50); background: transparent; border: 1px solid var(--cream-15);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .size-btn:hover { border-color: var(--orange); color: var(--cream); }
+    .size-btn.active { border-color: var(--orange); color: var(--cream); background: rgba(203,99,5,0.15); }
+    .size-btn.disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .qty-selector {
+      display: flex; align-items: center; gap: 0; margin-bottom: 28px;
+      border: 1px solid var(--cream-15); width: fit-content;
+    }
+    .qty-btn {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; color: var(--cream); font-size: 1.2rem;
+      cursor: pointer; transition: background 0.2s ease;
+    }
+    .qty-btn:hover { background: var(--cream-08); }
+    .qty-value {
+      width: 60px; height: 44px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.95rem; color: var(--cream);
+      border-left: 1px solid var(--cream-15); border-right: 1px solid var(--cream-15);
+    }
+
+    .add-to-cart-btn {
+      width: 100%; padding: 18px 32px; font-family: var(--body); font-size: 0.85rem;
+      font-weight: 700; letter-spacing: 4px; text-transform: uppercase; border: none;
+      cursor: pointer; transition: all 0.3s ease; background: var(--orange); color: var(--black);
+    }
+    .add-to-cart-btn:hover { background: #e07006; }
+    .add-to-cart-btn.sold-out {
+      background: var(--cream-08); color: var(--cream-30); cursor: not-allowed;
+    }
+
+    /* RELATED PRODUCTS */
+    .related-section { padding: 100px 80px 140px; border-top: 1px solid var(--cream-08); }
+    .related-section .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: var(--orange); margin-bottom: 20px; }
+    .related-section .section-title { font-family: var(--display); font-size: clamp(2rem, 3vw, 2.5rem); margin-bottom: 48px; }
+    .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .related-card { text-decoration: none; color: inherit; }
+    .related-card-img { aspect-ratio: 3/4; overflow: hidden; background: var(--cream-04); margin-bottom: 14px; }
+    .related-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .related-card:hover .related-card-img img { transform: scale(1.05); }
+    .related-card-name { font-family: var(--display); font-size: 1.1rem; margin-bottom: 4px; }
+    .related-card-price { font-weight: 700; font-size: 0.95rem; color: var(--cream-50); }
+
+    /* FOOTER */
+    footer { padding: 80px 80px 40px; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 80px; }
+    .footer-brand { max-width: 300px; }
+    .footer-brand-name { font-family: var(--display); font-size: 1.6rem; margin-bottom: 16px; }
+    .footer-brand-desc { font-family: var(--serif); font-size: 0.95rem; font-style: italic; color: var(--cream-30); line-height: 1.8; }
+    .footer-col h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-50); margin-bottom: 20px; }
+    .footer-col a { display: block; color: var(--cream-30); text-decoration: none; font-size: 0.9rem; margin-bottom: 12px; transition: color 0.3s ease; font-weight: 300; }
+    .footer-col a:hover { color: var(--orange); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 32px; border-top: 1px solid var(--cream-08); }
+    .footer-copy { font-size: 0.75rem; color: var(--cream-30); letter-spacing: 1px; }
+    .footer-socials { display: flex; gap: 24px; }
+    .footer-socials a { color: var(--cream-30); text-decoration: none; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease; }
+    .footer-socials a:hover { color: var(--orange); }
+
+    @media (max-width: 1024px) {
+      .product-detail-section { grid-template-columns: 1fr; gap: 48px; padding: 40px 40px 100px; }
+      .breadcrumb { padding: 120px 40px 20px; }
+      .related-section { padding: 80px 40px 100px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+    }
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: flex; }
+    }
+    @media (max-width: 768px) {
+      .breadcrumb { padding: 100px 24px 16px; }
+      .product-detail-section { padding: 24px 24px 80px; }
+      .related-section { padding: 60px 24px 80px; }
+      .related-grid { grid-template-columns: 1fr; gap: 32px; }
+      .gallery-thumb { width: 60px; height: 75px; }
+      footer { padding: 60px 24px 32px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+  <script>
+    fetch('/api/site-settings').then(r=>r.json()).then(s=>{
+      const r=document.documentElement.style;
+      if(s.primary_color){r.setProperty('--orange',s.primary_color);r.setProperty('--orange-dim',s.primary_color+'66');}
+      if(s.background_color)r.setProperty('--black',s.background_color);
+      if(s.text_color){r.setProperty('--cream',s.text_color);r.setProperty('--cream-50',s.text_color+'80');r.setProperty('--cream-30',s.text_color+'4D');r.setProperty('--cream-15',s.text_color+'26');r.setProperty('--cream-08',s.text_color+'14');r.setProperty('--cream-04',s.text_color+'0A');}
+    }).catch(()=>{});
+  </script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">
+      <img src="https://mercado-goods.com/cdn/shop/files/Gallo_design_width_22.5_Gallo_Design_Length-4.png?v=1739886113&width=300" alt="Mercado Goods Gallo">
+      <span class="nav-logo-text">Mercado Goods</span>
+    </a>
+    <div class="nav-links">
+      <a href="/shop.html">Shop</a>
+      <a href="/about.html">Story</a>
+      <a href="/blog.html">Journal</a>
+      <a href="/#contact">Contact</a>
+      <a href="/cart.html" class="nav-cart-wrap">
+        <svg class="nav-cart" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">&times;</button>
+    <a href="/shop.html">Shop</a><a href="/about.html">Story</a><a href="/blog.html">Journal</a><a href="/#contact">Contact</a><a href="/cart.html">Cart</a>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">Home</a><span>/</span><a href="/shop.html">Shop</a><span>/</span><span id="breadcrumbProduct">...</span>
+  </div>
+
+  <!-- PRODUCT DETAIL -->
+  <div class="product-detail-section" id="productDetail">
+    <div class="product-gallery reveal">
+      <div class="gallery-main"><img id="mainImage" src="" alt=""></div>
+      <div class="gallery-thumbs" id="thumbsRow"></div>
+    </div>
+    <div class="product-info-panel reveal reveal-delay-2">
+      <h1 class="product-title" id="productTitle"></h1>
+      <div class="product-price-large" id="productPrice"></div>
+      <p class="product-desc" id="productDesc"></p>
+      <div class="size-label" id="sizeLabel">Size</div>
+      <div class="size-selector" id="sizeSelector"></div>
+      <div class="qty-selector" id="qtySelector">
+        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+        <div class="qty-value" id="qtyValue">1</div>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <button class="add-to-cart-btn" id="addToCartBtn" onclick="handleAddToCart()">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <div class="related-section">
+    <div class="section-label reveal">More from the collection</div>
+    <div class="section-title reveal reveal-delay-1">You May Also Like</div>
+    <div class="related-grid" id="relatedGrid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-name">Mercado Goods</div>
+        <p class="footer-brand-desc">Rooted in heritage and crafted with intention. Every piece carries culture forward.</p>
+      </div>
+      <div class="footer-col"><h4>Shop</h4><a href="/shop.html">All Products</a><a href="/product.html?slug=la-camisa-blanca">La Camisa Blanca</a><a href="/product.html?slug=el-gaban">El Gaban</a><a href="/product.html?slug=la-tote-bag">La Tote Bag</a></div>
+      <div class="footer-col"><h4>Brand</h4><a href="/about.html">Our Story</a><a href="/blog.html">Journal</a><a href="/shop.html">Collaborations</a></div>
+      <div class="footer-col"><h4>Help</h4><a href="/#contact">Contact</a><a href="/#contact">Shipping</a><a href="/#contact">Returns</a><a href="/#contact">Privacy Policy</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 Mercado Goods. All rights reserved.</span>
+      <div class="footer-socials"><a href="https://instagram.com/mercadogoods" target="_blank">Instagram</a><a href="https://tiktok.com/@mercadogoods" target="_blank">TikTok</a><a href="https://youtube.com/@mercadogoods" target="_blank">YouTube</a></div>
+    </div>
+  </footer>
+
+  <script src="/cart.js"></script>
+  <script>
+    let currentProduct = null;
+    let quantity = 1;
+
+    // Safe JSON field parser (handles strings, arrays, double-encoded)
+    function safeParseJSON(value, fallback) {
+      if (value === null || value === undefined || value === '') return fallback;
+      if (typeof value !== 'string') return value;
+      try {
+        let parsed = JSON.parse(value);
+        if (typeof parsed === 'string') {
+          try { parsed = JSON.parse(parsed); } catch(e) {}
+        }
+        return parsed;
+      } catch(e) {
+        return fallback;
+      }
+    }
+
+    async function loadProduct() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug');
+      if (!slug) { window.location.href = '/shop.html'; return; }
+
+      try {
+        const res = await fetch('/api/products/' + slug);
+        if (!res.ok) { window.location.href = '/shop.html'; return; }
+        currentProduct = await res.json();
+
+        document.title = currentProduct.name + ' — Mercado Goods';
+        document.getElementById('breadcrumbProduct').textContent = currentProduct.name;
+        document.getElementById('productTitle').textContent = currentProduct.name;
+        document.getElementById('productPrice').textContent = '$' + currentProduct.price.toFixed(2);
+        document.getElementById('productDesc').textContent = currentProduct.description || '';
+
+        const images = safeParseJSON(currentProduct.images, []);
+        const mainImg = document.getElementById('mainImage');
+        mainImg.src = images[0] || '';
+        mainImg.alt = currentProduct.name;
+
+        const thumbsRow = document.getElementById('thumbsRow');
+        thumbsRow.innerHTML = '';
+        images.forEach((img, i) => {
+          const thumb = document.createElement('div');
+          thumb.className = 'gallery-thumb' + (i === 0 ? ' active' : '');
+          thumb.innerHTML = '<img src="' + img + '" alt="' + currentProduct.name + ' ' + (i+1) + '">';
+          thumb.addEventListener('click', () => {
+            mainImg.style.opacity = 0;
+            setTimeout(() => { mainImg.src = img; mainImg.style.opacity = 1; }, 250);
+            thumbsRow.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+          });
+          thumbsRow.appendChild(thumb);
+        });
+
+        const sizes = safeParseJSON(currentProduct.sizes, []);
+        const inventory = safeParseJSON(currentProduct.inventory, {});
+        const isSoldOut = currentProduct.status === 'sold_out';
+        const sizeSelector = document.getElementById('sizeSelector');
+
+        if (sizes.length > 0 && sizes[0] !== 'One Size') {
+          document.getElementById('sizeLabel').style.display = 'block';
+          sizeSelector.innerHTML = '';
+          sizes.forEach((size, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'size-btn';
+            btn.dataset.size = size;
+            btn.textContent = size;
+            const stock = inventory[size] || 0;
+            if (isSoldOut || stock === 0) {
+              btn.classList.add('disabled');
+            } else if (i === 0) {
+              btn.classList.add('active');
+            }
+            btn.addEventListener('click', () => {
+              if (btn.classList.contains('disabled')) return;
+              sizeSelector.querySelectorAll('.size-btn').forEach(s => s.classList.remove('active'));
+              btn.classList.add('active');
+            });
+            sizeSelector.appendChild(btn);
+          });
+        } else {
+          document.getElementById('sizeLabel').style.display = 'none';
+          sizeSelector.innerHTML = '';
+        }
+
+        const cartBtn = document.getElementById('addToCartBtn');
+        if (isSoldOut) {
+          cartBtn.textContent = 'Sold Out';
+          cartBtn.classList.add('sold-out');
+          cartBtn.disabled = true;
+          document.getElementById('qtySelector').style.display = 'none';
+        }
+
+        loadRelated(currentProduct.slug);
+      } catch (err) {
+        console.error('Failed to load product:', err);
+      }
+    }
+
+    async function loadRelated(currentSlug) {
+      try {
+        const res = await fetch('/api/products');
+        const products = await res.json();
+        const related = products.filter(p => p.slug !== currentSlug).slice(0, 3);
+        const grid = document.getElementById('relatedGrid');
+        grid.innerHTML = '';
+        related.forEach((p, i) => {
+          const images = safeParseJSON(p.images, []);
+          const card = document.createElement('a');
+          card.href = '/product.html?slug=' + p.slug;
+          card.className = 'related-card reveal reveal-delay-' + (i + 1);
+          card.innerHTML =
+            '<div class="related-card-img"><img src="' + (images[0] || '') + '" alt="' + p.name + '" loading="lazy"></div>' +
+            '<div class="related-card-name">' + p.name + '</div>' +
+            '<div class="related-card-price">$' + p.price.toFixed(2) + '</div>';
+          grid.appendChild(card);
+        });
+        initReveal();
+      } catch (err) {
+        console.error('Failed to load related:', err);
+      }
+    }
+
+    function changeQty(delta) {
+      quantity = Math.max(1, quantity + delta);
+      document.getElementById('qtyValue').textContent = quantity;
+    }
+
+    function handleAddToCart() {
+      if (!currentProduct || currentProduct.status === 'sold_out') return;
+      const images = safeParseJSON(currentProduct.images, []);
+      const activeSize = document.querySelector('.size-selector .size-btn.active');
+      const size = activeSize ? activeSize.dataset.size : 'One Size';
+      addToCart(currentProduct.id, currentProduct.slug, currentProduct.name, size, quantity, currentProduct.price, images[0] || '');
+      const btn = document.getElementById('addToCartBtn');
+      btn.textContent = 'Added to Cart';
+      btn.style.background = '#1a7a3a';
+      btn.style.color = '#fff';
+      setTimeout(() => { btn.textContent = 'Add to Cart'; btn.style.background = ''; btn.style.color = ''; }, 2000);
+    }
+
+    function initReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+    }
+
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 80); });
+    document.getElementById('hamburgerBtn').addEventListener('click', () => { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; });
+    document.getElementById('mobileClose').addEventListener('click', () => { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; });
+
+    document.addEventListener('DOMContentLoaded', () => { initReveal(); loadProduct(); });
+  </script>
+</body>
+</html>

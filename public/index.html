@@ -154,6 +154,10 @@
     .nav-links a:hover { color: var(--cream); }
     .nav-links a:hover::after { width: 100%; }
 
+    .nav-cart-wrap {
+      position: relative;
+      cursor: pointer;
+    }
     .nav-cart {
       width: 20px; height: 20px;
       stroke: var(--cream-50);
@@ -161,6 +165,21 @@
       cursor: pointer;
     }
     .nav-cart:hover { stroke: var(--cream); }
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      width: 18px;
+      height: 18px;
+      background: var(--orange);
+      color: var(--black);
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
 
     .hamburger {
       display: none;
@@ -411,7 +430,6 @@
     .product-image-wrap .img-hover { opacity: 0; }
     .product-card:hover .img-primary { opacity: 0; transform: scale(1.03); }
     .product-card:hover .img-hover { opacity: 1; transform: scale(1.03); }
-    /* Fallback if no hover image */
     .product-card:hover .img-primary.no-swap { opacity: 1; }
 
     .product-badge {
@@ -519,15 +537,6 @@
     .product-btn.add-to-cart:hover {
       background: #e07006;
     }
-    .product-btn.choose-options {
-      background: transparent;
-      color: var(--cream);
-      border: 1px solid var(--orange);
-    }
-    .product-btn.choose-options:hover {
-      background: var(--orange);
-      color: var(--black);
-    }
     .product-btn.sold-out-btn {
       background: var(--cream-08);
       color: var(--cream-30);
@@ -562,7 +571,6 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    .indigo-text { }
     .indigo-text .section-label { color: #6b9fd4; }
     .indigo-visual {
       position: relative;
@@ -635,7 +643,7 @@
       position: relative;
     }
     .story-quote::before {
-      content: '"';
+      content: '\201C';
       position: absolute;
       top: -40px;
       left: -10px;
@@ -871,6 +879,18 @@
       font-weight: 300;
     }
 
+    /* Loading skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, var(--cream-04) 25%, var(--cream-08) 50%, var(--cream-04) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 2px;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     @media (max-width: 1024px) {
       section { padding: 100px 40px; }
       .hero-content { padding: 0 40px 80px; }
@@ -891,47 +911,56 @@
     }
 
     @media (max-width: 768px) {
-
       section { padding: 80px 24px; }
       .hero-content { padding: 0 24px 60px; }
       .scroll-indicator { right: 24px; }
-
       .products-grid { grid-template-columns: 1fr; gap: 40px; }
       .journal-grid { grid-template-columns: 1fr; gap: 40px; }
-
       .indigo-section { padding: 80px 24px; }
       .story-text { padding: 48px 24px; }
       .story-quote { font-size: 2rem; }
-
       .newsletter-section { padding: 80px 24px; }
       .newsletter-form { flex-direction: column; }
       .newsletter-form input { padding: 16px 20px; }
       .newsletter-form button { padding: 16px 20px; }
-
       footer { padding: 60px 24px 32px; }
       .footer-top { grid-template-columns: 1fr; gap: 32px; }
       .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
     }
   </style>
+  <script>
+    fetch('/api/site-settings').then(r=>r.json()).then(s=>{
+      const r=document.documentElement.style;
+      if(s.primary_color){r.setProperty('--orange',s.primary_color);r.setProperty('--orange-dim',s.primary_color+'66');}
+      if(s.background_color)r.setProperty('--black',s.background_color);
+      if(s.text_color){r.setProperty('--cream',s.text_color);r.setProperty('--cream-50',s.text_color+'80');r.setProperty('--cream-30',s.text_color+'4D');r.setProperty('--cream-15',s.text_color+'26');r.setProperty('--cream-08',s.text_color+'14');r.setProperty('--cream-04',s.text_color+'0A');}
+    }).catch(()=>{});
+  </script>
 </head>
 <body>
 
+  <!-- Omnisend popup script placeholder -->
+  <!-- <script src="https://omnisnd.com/inshop/launcher.js" async></script> -->
+
   <!-- NAV -->
   <nav id="navbar">
-    <a href="#" class="nav-logo">
+    <a href="/" class="nav-logo">
       <img src="https://mercado-goods.com/cdn/shop/files/Gallo_design_width_22.5_Gallo_Design_Length-4.png?v=1739886113&width=300" alt="Mercado Goods Gallo">
       <span class="nav-logo-text">Mercado Goods</span>
     </a>
     <div class="nav-links">
-      <a href="#shop">Shop</a>
-      <a href="#story">Story</a>
-      <a href="#journal">Journal</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/about.html">Story</a>
+      <a href="/blog.html">Journal</a>
       <a href="#contact">Contact</a>
-      <svg class="nav-cart" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 01-8 0"/>
-      </svg>
+      <a href="/cart.html" class="nav-cart-wrap">
+        <svg class="nav-cart" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
     </div>
     <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -941,10 +970,11 @@
   <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobileMenu">
     <button class="mobile-close" id="mobileClose">&times;</button>
-    <a href="#shop" onclick="closeMobile()">Shop</a>
-    <a href="#story" onclick="closeMobile()">Story</a>
-    <a href="#journal" onclick="closeMobile()">Journal</a>
+    <a href="/shop.html" onclick="closeMobile()">Shop</a>
+    <a href="/about.html" onclick="closeMobile()">Story</a>
+    <a href="/blog.html" onclick="closeMobile()">Journal</a>
     <a href="#contact" onclick="closeMobile()">Contact</a>
+    <a href="/cart.html" onclick="closeMobile()">Cart</a>
   </div>
 
   <!-- HERO -->
@@ -955,11 +985,11 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-label">Est. by Gerardo Mercado</div>
-      <h1 class="hero-title">Rooted in Heritage.<br>Crafted with Intention.</h1>
+      <h1 class="hero-title" id="heroTitle">Rooted in Heritage.<br>Crafted with Intention.</h1>
       <p class="hero-subtitle">Clothing and accessories born from culture, made with care, and designed to carry meaning.</p>
       <div class="hero-line"></div>
       <div class="hero-cta">
-        <a href="#shop">Explore the Collection</a>
+        <a href="/shop.html">Explore the Collection</a>
       </div>
     </div>
     <div class="scroll-indicator">
@@ -986,86 +1016,14 @@
     </div>
   </div>
 
-  <!-- PRODUCTS -->
+  <!-- PRODUCTS (loaded dynamically) -->
   <section id="shop">
     <div class="reveal">
       <div class="section-label">The Collection</div>
       <div class="section-title">Every Piece, Intentional</div>
     </div>
-    <div class="products-grid">
-
-      <!-- LA CAMISA BLANCA - Available -->
-      <div class="product-card reveal reveal-delay-1">
-        <div class="product-image-wrap">
-          <img class="img-primary" src="https://mercado-goods.com/cdn/shop/files/ambermilla204779-R1-023-10.jpg?v=1771633559&width=800" alt="La Camisa Blanca" loading="lazy">
-          <img class="img-hover" src="https://mercado-goods.com/cdn/shop/files/1_b955aade-a69f-46d1-bdc2-9ab3b8517de2.png?v=1771721671&width=800" alt="La Camisa Blanca alternate" loading="lazy">
-        </div>
-        <div class="product-info">
-          <div class="product-name"><a href="#">La Camisa Blanca</a></div>
-          <div class="product-detail">100% US-grown cotton tee</div>
-          <div class="product-price">$50.00</div>
-          <div class="product-sizes">
-            <button class="size-btn" onclick="selectSize(this)">S</button>
-            <button class="size-btn" onclick="selectSize(this)">M</button>
-            <button class="size-btn active" onclick="selectSize(this)">L</button>
-            <button class="size-btn" onclick="selectSize(this)">XL</button>
-            <button class="size-btn" onclick="selectSize(this)">2XL</button>
-            <button class="size-btn" onclick="selectSize(this)">3XL</button>
-          </div>
-          <button class="product-btn add-to-cart" onclick="addToCart(this)">Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- LA SUDADERA NEGRA - Sold Out -->
-      <div class="product-card reveal reveal-delay-2">
-        <div class="product-image-wrap">
-          <img class="img-primary no-swap" src="https://mercado-goods.com/cdn/shop/files/ambermilla204779-R1-039-18.jpg?v=1771633613&width=800" alt="La Sudadera Negra" loading="lazy">
-          <div class="product-badge sold-out">Sold Out</div>
-        </div>
-        <div class="product-info">
-          <div class="product-name"><a href="#">La Sudadera Negra</a></div>
-          <div class="product-detail">Oversized sweatshirt — S to 2XL</div>
-          <div class="product-price">$90.00</div>
-          <div class="product-sizes">
-            <button class="size-btn disabled">S</button>
-            <button class="size-btn disabled">M</button>
-            <button class="size-btn disabled">L</button>
-            <button class="size-btn disabled">XL</button>
-            <button class="size-btn disabled">2XL</button>
-          </div>
-          <button class="product-btn sold-out-btn" disabled>Sold Out</button>
-        </div>
-      </div>
-
-      <!-- EL GABAN - Sold Out -->
-      <div class="product-card reveal reveal-delay-3">
-        <div class="product-image-wrap">
-          <img class="img-primary" src="https://mercado-goods.com/cdn/shop/files/IMG_0435.jpg?v=1771633732&width=800" alt="El Gaban" loading="lazy">
-          <img class="img-hover" src="https://mercado-goods.com/cdn/shop/files/1_dd3a755c-080e-4eae-aa01-b865cea4dd50.png?v=1771722854&width=800" alt="El Gaban alternate" loading="lazy">
-          <div class="product-badge sold-out">Sold Out</div>
-        </div>
-        <div class="product-info">
-          <div class="product-name"><a href="#">El Gaban</a></div>
-          <div class="product-detail">Handmade Japanese raw selvedge denim poncho — One size</div>
-          <div class="product-price">$150.00</div>
-          <button class="product-btn sold-out-btn" disabled>Sold Out</button>
-        </div>
-      </div>
-
-      <!-- LA TOTE BAG - Sold Out -->
-      <div class="product-card reveal reveal-delay-4">
-        <div class="product-image-wrap">
-          <img class="img-primary no-swap" src="https://mercado-goods.com/cdn/shop/files/DSC_0314.jpg?v=1771724386&width=800" alt="La Tote Bag" loading="lazy">
-          <div class="product-badge sold-out">Sold Out</div>
-        </div>
-        <div class="product-info">
-          <div class="product-name"><a href="#">La Tote Bag</a></div>
-          <div class="product-detail">Handcrafted — One size</div>
-          <div class="product-price">$250.00</div>
-          <button class="product-btn sold-out-btn" disabled>Sold Out</button>
-        </div>
-      </div>
-
+    <div class="products-grid" id="productsGrid">
+      <!-- Products loaded via API -->
     </div>
   </section>
 
@@ -1106,41 +1064,14 @@
     </div>
   </section>
 
-  <!-- JOURNAL -->
+  <!-- JOURNAL (loaded dynamically) -->
   <section id="journal">
     <div class="reveal">
       <div class="section-label">The Journal</div>
       <div class="section-title">Stories Behind the Work</div>
     </div>
-    <div class="journal-grid">
-
-      <a href="#" class="journal-card reveal reveal-delay-1">
-        <div class="journal-image">
-          <img src="https://mercado-goods.com/cdn/shop/articles/ONE_Final_HUrrah-2.png?v=1747258478&width=600" alt="The Final Hurrah" loading="lazy">
-        </div>
-        <div class="journal-date">May 2025</div>
-        <div class="journal-title">Why's Our Last Showcase So Special?</div>
-        <div class="journal-excerpt">A labor of love — the story behind our most meaningful event yet.</div>
-      </a>
-
-      <a href="#" class="journal-card reveal reveal-delay-2">
-        <div class="journal-image">
-          <img src="https://mercado-goods.com/cdn/shop/articles/Media_Luna.png?v=1736796582&width=600" alt="Media Luna Interview" loading="lazy">
-        </div>
-        <div class="journal-date">Jan 2025</div>
-        <div class="journal-title">The Media Luna Interview</div>
-        <div class="journal-excerpt">A conversation with Claudia about community, creativity, and building something bigger than yourself.</div>
-      </a>
-
-      <a href="#" class="journal-card reveal reveal-delay-3">
-        <div class="journal-image">
-          <img src="https://mercado-goods.com/cdn/shop/articles/Perfection.png?v=1725278368&width=600" alt="Why Perfection Sucks" loading="lazy">
-        </div>
-        <div class="journal-date">Sep 2024</div>
-        <div class="journal-title">Why Perfection Sucks</div>
-        <div class="journal-excerpt">On creative block, embracing imperfection, and finding freedom in the process.</div>
-      </a>
-
+    <div class="journal-grid" id="journalGrid">
+      <!-- Blog posts loaded via API -->
     </div>
   </section>
 
@@ -1160,60 +1091,279 @@
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-brand-name">Mercado Goods</div>
-        <p class="footer-brand-desc">Rooted in heritage and crafted with intention. Every piece carries culture forward.</p>
+        <p class="footer-brand-desc" id="footerDesc">Rooted in heritage and crafted with intention. Every piece carries culture forward.</p>
       </div>
       <div class="footer-col">
         <h4>Shop</h4>
-        <a href="#">All Products</a>
-        <a href="#">La Camisa Blanca</a>
-        <a href="#">El Gaban</a>
-        <a href="#">La Tote Bag</a>
+        <a href="/shop.html">All Products</a>
+        <a href="/product.html?slug=la-camisa-blanca">La Camisa Blanca</a>
+        <a href="/product.html?slug=el-gaban">El Gaban</a>
+        <a href="/product.html?slug=la-tote-bag">La Tote Bag</a>
       </div>
       <div class="footer-col">
         <h4>Brand</h4>
-        <a href="#">Our Story</a>
-        <a href="#">Journal</a>
-        <a href="#">Collaborations</a>
+        <a href="/about.html">Our Story</a>
+        <a href="/blog.html">Journal</a>
+        <a href="/shop.html">Collaborations</a>
       </div>
       <div class="footer-col">
         <h4>Help</h4>
-        <a href="#">Contact</a>
-        <a href="#">Shipping</a>
-        <a href="#">Returns</a>
-        <a href="#">Privacy Policy</a>
+        <a href="#contact">Contact</a>
+        <a href="#contact">Shipping</a>
+        <a href="#contact">Returns</a>
+        <a href="#contact">Privacy Policy</a>
       </div>
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">&copy; 2025 Mercado Goods. All rights reserved.</span>
-      <div class="footer-socials">
-        <a href="#">Instagram</a>
-        <a href="#">TikTok</a>
-        <a href="#">YouTube</a>
+      <div class="footer-socials" id="footerSocials">
+        <a href="https://instagram.com/mercadogoods" target="_blank">Instagram</a>
+        <a href="https://tiktok.com/@mercadogoods" target="_blank">TikTok</a>
+        <a href="https://youtube.com/@mercadogoods" target="_blank">YouTube</a>
       </div>
     </div>
   </footer>
 
+  <!-- Email/SMS Collection Popup -->
+  <div id="mg-subscribe-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;opacity:0;transition:opacity 0.4s ease;align-items:center;justify-content:center;">
+    <div id="mg-subscribe-modal" style="background:rgba(10,10,10,0.97);border:1px solid rgba(245,238,221,0.12);border-radius:12px;padding:48px 40px;max-width:440px;width:90%;position:relative;transform:translateY(20px);opacity:0;transition:transform 0.4s ease,opacity 0.4s ease;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
+      <button onclick="closeMGPopup()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:rgba(245,238,221,0.4);font-size:24px;cursor:pointer;line-height:1;transition:color 0.2s;">&times;</button>
+      <h2 style="font-family:'UnifrakturMaguntia',cursive;font-size:2rem;color:#f5eedd;margin-bottom:12px;text-align:center;">Join the Community</h2>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:rgba(245,238,221,0.5);text-align:center;line-height:1.7;margin-bottom:28px;">Get early access to new drops, exclusive deals, and community events.</p>
+      <form id="mg-popup-form" onsubmit="return handleMGPopupSubmit(event)">
+        <input type="email" id="mg-popup-email" required placeholder="Your email address" style="width:100%;padding:14px 18px;background:rgba(245,238,221,0.06);border:1px solid rgba(245,238,221,0.15);border-radius:6px;color:#f5eedd;font-family:'Assistant',sans-serif;font-size:0.95rem;margin-bottom:12px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#cb6305'" onblur="this.style.borderColor='rgba(245,238,221,0.15)'">
+        <input type="tel" id="mg-popup-phone" placeholder="Phone number (optional)" style="width:100%;padding:14px 18px;background:rgba(245,238,221,0.06);border:1px solid rgba(245,238,221,0.15);border-radius:6px;color:#f5eedd;font-family:'Assistant',sans-serif;font-size:0.95rem;margin-bottom:20px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#cb6305'" onblur="this.style.borderColor='rgba(245,238,221,0.15)'">
+        <button type="submit" id="mg-popup-btn" style="width:100%;padding:16px;background:#cb6305;color:#0a0a0a;border:none;border-radius:6px;font-family:'Assistant',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.3s;">Subscribe</button>
+      </form>
+      <div id="mg-popup-success" style="display:none;text-align:center;padding:20px 0;">
+        <div style="font-size:2rem;margin-bottom:12px;">&#10003;</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:#f5eedd;">Welcome to the community!</p>
+      </div>
+      <p style="text-align:center;margin-top:16px;"><a href="#" onclick="closeMGPopup();return false;" style="color:rgba(245,238,221,0.3);font-size:0.8rem;text-decoration:none;letter-spacing:1px;transition:color 0.2s;" onmouseover="this.style.color='rgba(245,238,221,0.6)'" onmouseout="this.style.color='rgba(245,238,221,0.3)'">No thanks</a></p>
+    </div>
+  </div>
   <script>
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+  (function(){
+    if(localStorage.getItem('mg_popup_shown'))return;
+    setTimeout(function(){
+      if(localStorage.getItem('mg_popup_shown'))return;
+      var overlay=document.getElementById('mg-subscribe-overlay');
+      if(!overlay)return;
+      overlay.style.display='flex';
+      requestAnimationFrame(function(){
+        overlay.style.opacity='1';
+        var modal=document.getElementById('mg-subscribe-modal');
+        if(modal){modal.style.transform='translateY(0)';modal.style.opacity='1';}
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    },3000);
+  })();
+  function closeMGPopup(){
+    var overlay=document.getElementById('mg-subscribe-overlay');
+    var modal=document.getElementById('mg-subscribe-modal');
+    if(modal){modal.style.transform='translateY(20px)';modal.style.opacity='0';}
+    if(overlay)overlay.style.opacity='0';
+    setTimeout(function(){if(overlay)overlay.style.display='none';},400);
+    localStorage.setItem('mg_popup_shown','1');
+  }
+  function handleMGPopupSubmit(e){
+    e.preventDefault();
+    var email=document.getElementById('mg-popup-email').value.trim();
+    var phone=document.getElementById('mg-popup-phone').value.trim();
+    var btn=document.getElementById('mg-popup-btn');
+    btn.textContent='Subscribing...';btn.disabled=true;
+    fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,phone:phone||null})})
+    .then(function(r){return r.json()})
+    .then(function(){
+      document.getElementById('mg-popup-form').style.display='none';
+      document.getElementById('mg-popup-success').style.display='block';
+      localStorage.setItem('mg_popup_shown','1');
+      setTimeout(closeMGPopup,2000);
+    })
+    .catch(function(){btn.textContent='Subscribe';btn.disabled=false;});
+    return false;
+  }
+  </script>
 
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
-      observer.observe(el);
-    });
+  <script src="/cart.js"></script>
+  <script>
+    // ===== Safe JSON field parser (handles strings, arrays, double-encoded) =====
+    function safeParseJSON(value, fallback) {
+      if (value === null || value === undefined || value === '') return fallback;
+      if (typeof value !== 'string') return value; // already parsed
+      try {
+        let parsed = JSON.parse(value);
+        // Handle double-encoded: if result is still a string, parse again
+        if (typeof parsed === 'string') {
+          try { parsed = JSON.parse(parsed); } catch(e) { /* not double-encoded */ }
+        }
+        return parsed;
+      } catch(e) {
+        return fallback;
+      }
+    }
 
-    // Nav scroll effect
+    // ===== Load products dynamically =====
+    async function loadProducts() {
+      const grid = document.getElementById('productsGrid');
+      try {
+        const res = await fetch('/api/products');
+        const products = await res.json();
+        grid.innerHTML = '';
+        products.forEach((product, i) => {
+          const images = safeParseJSON(product.images, []);
+          const sizes = safeParseJSON(product.sizes, []);
+          const inventory = safeParseJSON(product.inventory, {});
+          const isSoldOut = product.status === 'sold_out';
+          const hasHover = images.length >= 2;
+
+          let sizesHtml = '';
+          if (sizes.length > 0 && sizes[0] !== 'One Size') {
+            sizesHtml = '<div class="product-sizes">';
+            sizes.forEach((size, si) => {
+              const sizeStock = inventory[size] || 0;
+              const disabledClass = isSoldOut || sizeStock === 0 ? 'disabled' : '';
+              const activeClass = !isSoldOut && si === 0 && sizeStock > 0 ? 'active' : '';
+              sizesHtml += '<button class="size-btn ' + disabledClass + ' ' + activeClass + '" onclick="selectSize(this)" data-size="' + size + '">' + size + '</button>';
+            });
+            sizesHtml += '</div>';
+          }
+
+          let btnHtml = '';
+          if (isSoldOut) {
+            btnHtml = '<button class="product-btn sold-out-btn" disabled>Sold Out</button>';
+          } else {
+            btnHtml = '<button class="product-btn add-to-cart" onclick="handleAddToCart(this, ' + product.id + ', \'' + product.slug + '\', \'' + product.name.replace(/'/g, "\\'") + '\', ' + product.price + ', \'' + (images[0] || '') + '\')">Add to Cart</button>';
+          }
+
+          const badgeHtml = isSoldOut ? '<div class="product-badge sold-out">Sold Out</div>' : '';
+
+          const card = document.createElement('div');
+          card.className = 'product-card reveal reveal-delay-' + ((i % 4) + 1);
+          card.innerHTML =
+            '<a href="/product.html?slug=' + product.slug + '" class="product-image-wrap">' +
+              '<img class="img-primary' + (!hasHover ? ' no-swap' : '') + '" src="' + (images[0] || '') + '" alt="' + product.name + '" loading="lazy">' +
+              (hasHover ? '<img class="img-hover" src="' + images[1] + '" alt="' + product.name + ' alternate" loading="lazy">' : '') +
+              badgeHtml +
+            '</a>' +
+            '<div class="product-info">' +
+              '<div class="product-name"><a href="/product.html?slug=' + product.slug + '">' + product.name + '</a></div>' +
+              '<div class="product-detail">' + (product.description || '') + '</div>' +
+              '<div class="product-price">$' + product.price.toFixed(2) + '</div>' +
+              sizesHtml +
+              btnHtml +
+            '</div>';
+          grid.appendChild(card);
+        });
+        initReveal();
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      }
+    }
+
+    // ===== Load journal posts dynamically =====
+    async function loadJournal() {
+      const grid = document.getElementById('journalGrid');
+      try {
+        const res = await fetch('/api/blog');
+        const posts = await res.json();
+        grid.innerHTML = '';
+        posts.forEach((post, i) => {
+          const date = post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
+          const card = document.createElement('a');
+          card.href = '/post.html?slug=' + post.slug;
+          card.className = 'journal-card reveal reveal-delay-' + ((i % 3) + 1);
+          card.innerHTML =
+            '<div class="journal-image">' +
+              '<img src="' + (post.image_url || '') + '" alt="' + post.title + '" loading="lazy">' +
+            '</div>' +
+            '<div class="journal-date">' + date + '</div>' +
+            '<div class="journal-title">' + post.title + '</div>' +
+            '<div class="journal-excerpt">' + (post.excerpt || '') + '</div>';
+          grid.appendChild(card);
+        });
+        initReveal();
+      } catch (err) {
+        console.error('Failed to load journal:', err);
+      }
+    }
+
+    // ===== Load site settings =====
+    async function loadSiteSettings() {
+      try {
+        const res = await fetch('/api/site-settings');
+        const settings = await res.json();
+        const map = {};
+        if (Array.isArray(settings)) {
+          settings.forEach(s => { map[s.key] = s.value; });
+        } else {
+          Object.assign(map, settings);
+        }
+        // Update social links
+        const socials = document.getElementById('footerSocials');
+        if (socials && (map.instagram || map.tiktok || map.youtube)) {
+          socials.innerHTML = '';
+          if (map.instagram) socials.innerHTML += '<a href="' + map.instagram + '" target="_blank">Instagram</a>';
+          if (map.tiktok) socials.innerHTML += '<a href="' + map.tiktok + '" target="_blank">TikTok</a>';
+          if (map.youtube) socials.innerHTML += '<a href="' + map.youtube + '" target="_blank">YouTube</a>';
+        }
+        if (map.footer_text) {
+          const desc = document.getElementById('footerDesc');
+          if (desc) desc.textContent = map.footer_text;
+        }
+      } catch (err) {
+        console.error('Failed to load settings:', err);
+      }
+    }
+
+    // ===== Size selector =====
+    function selectSize(btn) {
+      if (btn.classList.contains('disabled')) return;
+      const sizes = btn.parentElement.querySelectorAll('.size-btn');
+      sizes.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ===== Add to cart handler =====
+    function handleAddToCart(btn, productId, slug, name, price, image) {
+      const card = btn.closest('.product-card');
+      const activeSize = card ? card.querySelector('.size-btn.active') : null;
+      const size = activeSize ? activeSize.dataset.size : 'One Size';
+
+      addToCart(productId, slug, name, size, 1, price, image);
+
+      const original = btn.textContent;
+      btn.textContent = 'Added';
+      btn.style.background = '#1a7a3a';
+      btn.style.color = '#fff';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 2000);
+    }
+
+    // ===== Scroll reveal =====
+    function initReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)').forEach(el => {
+        observer.observe(el);
+      });
+    }
+
+    // ===== Nav scroll effect =====
     const nav = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 80);
     });
 
-    // Mobile menu
+    // ===== Mobile menu =====
     const hamburger = document.getElementById('hamburgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const mobileClose = document.getElementById('mobileClose');
@@ -1229,28 +1379,7 @@
       document.body.style.overflow = '';
     }
 
-    // Size selector
-    function selectSize(btn) {
-      if (btn.classList.contains('disabled')) return;
-      const sizes = btn.parentElement.querySelectorAll('.size-btn');
-      sizes.forEach(s => s.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    // Add to cart feedback
-    function addToCart(btn) {
-      const original = btn.textContent;
-      btn.textContent = 'Added ✓';
-      btn.style.background = '#1a7a3a';
-      btn.style.color = '#fff';
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.style.background = '';
-        btn.style.color = '';
-      }, 2000);
-    }
-
-    // Smooth scroll for anchor links
+    // ===== Smooth scroll for anchor links =====
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', function(e) {
         const target = document.querySelector(this.getAttribute('href'));
@@ -1259,6 +1388,14 @@
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
+    });
+
+    // ===== Init =====
+    document.addEventListener('DOMContentLoaded', () => {
+      initReveal();
+      loadProducts();
+      loadJournal();
+      loadSiteSettings();
     });
   </script>
 

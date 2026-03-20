@@ -1,6 +1,17 @@
 name = "mercado-goods-redesign"
 main = "worker.js"
 compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mercado-goods"
+database_id = "27a033dd-ea19-45f9-a5c4-a71fd4173f55"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+bucket_name = "mercado-goods"
+binding = "IMAGES"

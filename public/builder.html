@@ -1,0 +1,3160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mercado Goods — Website Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --panel: #161616;
+      --panel-hover: #1e1e1e;
+      --panel-active: #252525;
+      --border: rgba(245, 238, 221, 0.08);
+      --border-light: rgba(245, 238, 221, 0.12);
+      --cream: #f5eedd;
+      --cream-70: rgba(245, 238, 221, 0.7);
+      --cream-50: rgba(245, 238, 221, 0.5);
+      --cream-30: rgba(245, 238, 221, 0.3);
+      --cream-15: rgba(245, 238, 221, 0.15);
+      --cream-08: rgba(245, 238, 221, 0.08);
+      --orange: #cb6305;
+      --orange-hover: #e07006;
+      --orange-dim: rgba(203, 99, 5, 0.15);
+      --orange-glow: rgba(203, 99, 5, 0.25);
+      --red: #e74c3c;
+      --red-dim: rgba(231, 76, 60, 0.15);
+      --green: #2ecc71;
+      --green-dim: rgba(46, 204, 113, 0.15);
+      --blue: #3498db;
+      --blue-dim: rgba(52, 152, 219, 0.15);
+      --radius: 8px;
+      --radius-sm: 4px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --transition: 0.2s ease;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Assistant', sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== LAYOUT ===== */
+    .builder-layout {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      height: 56px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .top-bar-logo {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-bar-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .top-bar-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border-light);
+    }
+
+    .page-selector {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      color: var(--cream);
+      padding: 6px 32px 6px 12px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23f5eedd' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      outline: none;
+    }
+
+    .page-selector:focus {
+      border-color: var(--orange);
+    }
+
+    .top-bar-center {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .device-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--cream-30);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .device-btn:hover {
+      color: var(--cream-70);
+      background: var(--cream-08);
+    }
+
+    .device-btn.active {
+      color: var(--cream);
+      background: var(--orange-dim);
+      border-color: rgba(203, 99, 5, 0.3);
+    }
+
+    .device-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .save-status {
+      font-size: 0.75rem;
+      color: var(--cream-30);
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .save-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cream-30);
+      transition: background var(--transition);
+    }
+
+    .save-dot.saved { background: var(--green); }
+    .save-dot.saving { background: var(--orange); animation: pulse 1s infinite; }
+    .save-dot.unsaved { background: var(--red); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .btn {
+      padding: 7px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--cream-70);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      letter-spacing: 0.3px;
+    }
+
+    .btn:hover {
+      background: var(--cream-08);
+      color: var(--cream);
+      border-color: var(--cream-15);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #0a0a0a;
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-hover);
+      border-color: var(--orange-hover);
+      color: #0a0a0a;
+    }
+
+    .btn-danger {
+      color: var(--red);
+      border-color: rgba(231, 76, 60, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: var(--red-dim);
+      border-color: rgba(231, 76, 60, 0.4);
+    }
+
+    /* ===== MAIN AREA ===== */
+    .main-area {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ===== LEFT PANEL ===== */
+    .left-panel {
+      width: 350px;
+      min-width: 350px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--cream-50);
+    }
+
+    .panel-back {
+      background: none;
+      border: none;
+      color: var(--cream-50);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+    }
+
+    .panel-back:hover {
+      color: var(--cream);
+      background: var(--cream-08);
+    }
+
+    .panel-back svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--cream-15) transparent;
+    }
+
+    .panel-content::-webkit-scrollbar { width: 4px; }
+    .panel-content::-webkit-scrollbar-track { background: transparent; }
+    .panel-content::-webkit-scrollbar-thumb { background: var(--cream-15); border-radius: 2px; }
+
+    /* ===== SECTIONS LIST ===== */
+    .sections-list {
+      padding: 8px;
+    }
+
+    .section-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+      position: relative;
+    }
+
+    .section-item:hover {
+      background: var(--panel-hover);
+      border-color: var(--border);
+    }
+
+    .section-item.active {
+      background: var(--orange-dim);
+      border-color: rgba(203, 99, 5, 0.3);
+    }
+
+    .section-item.dragging {
+      opacity: 0.4;
+      background: var(--orange-dim);
+    }
+
+    .section-item.drag-over-top::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: var(--orange);
+      border-radius: 1px;
+    }
+
+    .section-item.drag-over-bottom::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: var(--orange);
+      border-radius: 1px;
+    }
+
+    .drag-handle {
+      cursor: grab;
+      color: var(--cream-30);
+      font-size: 1rem;
+      line-height: 1;
+      user-select: none;
+      flex-shrink: 0;
+      width: 16px;
+      text-align: center;
+      transition: color var(--transition);
+    }
+
+    .drag-handle:active { cursor: grabbing; }
+
+    .section-item:hover .drag-handle { color: var(--cream-50); }
+
+    .section-icon {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .section-name {
+      flex: 1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cream-70);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .section-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .section-item:hover .section-actions { opacity: 1; }
+
+    .section-action-btn {
+      background: none;
+      border: none;
+      color: var(--cream-30);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      width: 26px;
+      height: 26px;
+    }
+
+    .section-action-btn:hover {
+      background: var(--cream-08);
+      color: var(--cream);
+    }
+
+    .section-action-btn.hidden-toggle {
+      opacity: 0.4;
+    }
+
+    .section-action-btn.delete-btn:hover {
+      background: var(--red-dim);
+      color: var(--red);
+    }
+
+    .add-section-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: calc(100% - 16px);
+      margin: 8px;
+      padding: 12px;
+      border: 1px dashed var(--cream-15);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--cream-50);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .add-section-btn:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: var(--orange-dim);
+    }
+
+    .add-section-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ===== SECTION TEMPLATES ===== */
+    .templates-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .template-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+
+    .template-card:hover {
+      border-color: var(--orange);
+      background: var(--orange-dim);
+      transform: translateY(-1px);
+    }
+
+    .template-icon {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .template-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--cream-70);
+      margin-bottom: 4px;
+    }
+
+    .template-desc {
+      font-size: 0.68rem;
+      color: var(--cream-30);
+      line-height: 1.4;
+    }
+
+    /* ===== SETTINGS PANEL ===== */
+    .settings-panel {
+      padding: 16px;
+    }
+
+    .setting-group {
+      margin-bottom: 20px;
+    }
+
+    .setting-group-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cream-30);
+      margin-bottom: 10px;
+    }
+
+    .setting-row {
+      margin-bottom: 14px;
+    }
+
+    .setting-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--cream-50);
+      margin-bottom: 6px;
+    }
+
+    .setting-input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .setting-input:focus {
+      border-color: var(--orange);
+    }
+
+    .setting-input::placeholder {
+      color: var(--cream-30);
+    }
+
+    textarea.setting-input {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+
+    textarea.setting-input.code-input {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.78rem;
+      min-height: 160px;
+      tab-size: 2;
+    }
+
+    .setting-select {
+      width: 100%;
+      padding: 8px 32px 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23f5eedd' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color var(--transition);
+    }
+
+    .setting-select:focus {
+      border-color: var(--orange);
+    }
+
+    .setting-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .setting-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: var(--cream-15);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .setting-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--orange);
+      cursor: pointer;
+      border: 2px solid var(--panel);
+    }
+
+    .setting-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--orange);
+      cursor: pointer;
+      border: 2px solid var(--panel);
+    }
+
+    .slider-value {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--cream-50);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .setting-toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+
+    .setting-toggle-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cream-70);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 38px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--cream-15);
+      border-radius: 10px;
+      transition: background var(--transition);
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--cream-50);
+      transition: all var(--transition);
+    }
+
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--orange);
+    }
+
+    .toggle-switch input:checked + .toggle-track::after {
+      left: 20px;
+      background: #fff;
+    }
+
+    .setting-color-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .setting-color {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      padding: 0;
+      background: none;
+      overflow: hidden;
+    }
+
+    .setting-color::-webkit-color-swatch-wrapper { padding: 0; }
+    .setting-color::-webkit-color-swatch { border: none; border-radius: 2px; }
+    .setting-color::-moz-color-swatch { border: none; }
+
+    .color-hex {
+      font-size: 0.78rem;
+      color: var(--cream-50);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .btn-group-item {
+      flex: 1;
+      padding: 7px 8px;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      color: var(--cream-30);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+
+    .btn-group-item:last-child { border-right: none; }
+
+    .btn-group-item:hover {
+      background: var(--cream-08);
+      color: var(--cream-70);
+    }
+
+    .btn-group-item.active {
+      background: var(--orange-dim);
+      color: var(--orange);
+    }
+
+    /* Image upload zone */
+    .upload-zone {
+      border: 2px dashed var(--cream-15);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-active {
+      border-color: var(--orange);
+      background: var(--orange-dim);
+    }
+
+    .upload-zone.has-image {
+      padding: 0;
+      border-style: solid;
+      border-color: var(--border-light);
+    }
+
+    .upload-zone img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .upload-zone .upload-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-zone .upload-placeholder svg {
+      width: 28px;
+      height: 28px;
+      color: var(--cream-30);
+    }
+
+    .upload-zone .upload-text {
+      font-size: 0.78rem;
+      color: var(--cream-30);
+    }
+
+    .upload-zone .upload-hint {
+      font-size: 0.68rem;
+      color: var(--cream-15);
+    }
+
+    .upload-zone input[type="file"] {
+      display: none;
+    }
+
+    .upload-remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      background: rgba(0,0,0,0.7);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      z-index: 2;
+    }
+
+    .upload-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--orange);
+      transition: width 0.3s ease;
+    }
+
+    /* Stats items editor */
+    .stat-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-item-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .stat-item-row .setting-input {
+      flex: 1;
+    }
+
+    .stat-item-row .setting-input:first-child {
+      flex: 0.6;
+    }
+
+    .stat-remove-btn {
+      background: none;
+      border: none;
+      color: var(--cream-30);
+      cursor: pointer;
+      padding: 4px;
+      font-size: 1rem;
+      transition: color var(--transition);
+      flex-shrink: 0;
+    }
+
+    .stat-remove-btn:hover { color: var(--red); }
+
+    .add-stat-btn {
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      border: 1px dashed var(--cream-15);
+      border-radius: var(--radius-sm);
+      color: var(--cream-30);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 8px;
+    }
+
+    .add-stat-btn:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* Gallery images */
+    .gallery-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .gallery-thumb {
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .gallery-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-thumb .upload-remove {
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+    }
+
+    /* ===== RIGHT PANEL / PREVIEW ===== */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #1a1a1a;
+      overflow: hidden;
+    }
+
+    .preview-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+      overflow: auto;
+      background: repeating-conic-gradient(#1a1a1a 0% 25%, #1e1e1e 0% 50%) 50% / 20px 20px;
+    }
+
+    .preview-frame {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 60px rgba(0,0,0,0.5);
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      height: 100%;
+      position: relative;
+    }
+
+    .preview-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .preview-loading {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+
+    .preview-loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--cream-15);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 0.78rem;
+      color: var(--cream-30);
+      letter-spacing: 1px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--panel);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cream);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      min-width: 240px;
+    }
+
+    .toast.removing {
+      animation: toastOut 0.3s ease forwards;
+    }
+
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error { border-left: 3px solid var(--red); }
+    .toast.info { border-left: 3px solid var(--blue); }
+
+    .toast-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(20px) scale(0.95); }
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cream-50);
+      margin-bottom: 8px;
+    }
+
+    .empty-state-desc {
+      font-size: 0.82rem;
+      color: var(--cream-30);
+      max-width: 240px;
+      line-height: 1.5;
+    }
+
+    /* Undo bar */
+    .undo-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--panel);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 8px 12px 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      z-index: 9999;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 0.82rem;
+      color: var(--cream-70);
+    }
+
+    .undo-bar.hidden { display: none; }
+
+    .undo-btn {
+      background: var(--orange);
+      border: none;
+      color: #0a0a0a;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+    }
+
+    /* Settings note */
+    .setting-note {
+      font-size: 0.72rem;
+      color: var(--cream-30);
+      font-style: italic;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .setting-separator {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="builder-layout">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <a href="/admin.html" class="top-bar-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Builder
+      </a>
+      <div class="top-bar-divider"></div>
+      <select class="page-selector" id="pageSelector">
+        <option value="home">Home</option>
+        <option value="shop">Shop</option>
+        <option value="about">About</option>
+      </select>
+    </div>
+
+    <div class="top-bar-center">
+      <button class="device-btn active" data-device="desktop" onclick="setDevice('desktop')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Desktop
+      </button>
+      <button class="device-btn" data-device="tablet" onclick="setDevice('tablet')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        Tablet
+      </button>
+      <button class="device-btn" data-device="mobile" onclick="setDevice('mobile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        Mobile
+      </button>
+    </div>
+
+    <div class="top-bar-right">
+      <div class="save-status" id="saveStatus">
+        <span class="save-dot saved" id="saveDot"></span>
+        <span id="saveText">Saved</span>
+      </div>
+      <button class="btn" onclick="undoAction()" title="Undo (Ctrl+Z)" id="undoBtn" disabled>Undo</button>
+      <button class="btn btn-danger" onclick="discardChanges()">Discard</button>
+      <button class="btn" onclick="openPreview()">Preview</button>
+      <button class="btn" onclick="saveAll()">Save</button>
+      <button class="btn btn-primary" onclick="publishAll()">Publish</button>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <!-- MODE 1: Sections List -->
+      <div id="sectionsMode">
+        <div class="panel-header">
+          <span class="panel-title">Sections</span>
+          <span style="font-size: 0.72rem; color: var(--cream-30);" id="sectionCount">0 sections</span>
+        </div>
+        <div class="panel-content">
+          <div class="sections-list" id="sectionsList"></div>
+          <button class="add-section-btn" onclick="showTemplates()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Section
+          </button>
+        </div>
+      </div>
+
+      <!-- MODE 2: Template Picker -->
+      <div id="templatesMode" style="display: none;">
+        <div class="panel-header">
+          <button class="panel-back" onclick="showSections()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+          <span class="panel-title">Add Section</span>
+        </div>
+        <div class="panel-content">
+          <div class="templates-grid" id="templatesGrid"></div>
+        </div>
+      </div>
+
+      <!-- MODE 3: Section Settings -->
+      <div id="settingsMode" style="display: none;">
+        <div class="panel-header">
+          <button class="panel-back" onclick="showSections()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+          <span class="panel-title" id="settingsTitle">Settings</span>
+        </div>
+        <div class="panel-content">
+          <div class="settings-panel" id="settingsPanel"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Preview -->
+    <div class="right-panel">
+      <div class="preview-wrapper" id="previewWrapper">
+        <div class="preview-frame" id="previewFrame" style="width: 100%;">
+          <div class="preview-loading" id="previewLoading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading preview...</div>
+          </div>
+          <iframe id="previewIframe" src="/index.html?preview=true"></iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// =============================================================================
+// Mercado Goods Website Builder
+// =============================================================================
+
+// ===== AUTH CHECK =====
+(function checkAuth() {
+  const token = localStorage.getItem('admin_token');
+  if (!token) {
+    window.location.href = '/admin.html';
+    return;
+  }
+  window._authToken = token;
+})();
+
+// ===== SECTION TEMPLATE DEFINITIONS =====
+const SECTION_TEMPLATES = [
+  { type: 'hero', icon: '\u{1F5BC}\uFE0F', name: 'Hero Banner', desc: 'Full width image with text overlay' },
+  { type: 'product_grid', icon: '\u{1F6CD}\uFE0F', name: 'Product Grid', desc: 'Grid of products' },
+  { type: 'text_block', icon: '\u{1F4DD}', name: 'Text Block', desc: 'Rich text content section' },
+  { type: 'image_text', icon: '\u{1F5BC}\uFE0F', name: 'Image + Text', desc: 'Side by side image and text' },
+  { type: 'blog_posts', icon: '\u{1F4F0}', name: 'Blog Posts', desc: 'Latest journal entries' },
+  { type: 'newsletter', icon: '\u{1F48C}', name: 'Newsletter Signup', desc: 'Email collection form' },
+  { type: 'featured_product', icon: '\u{1F3F7}\uFE0F', name: 'Featured Product', desc: 'Single product spotlight' },
+  { type: 'announcement', icon: '\u{1F4E2}', name: 'Announcement Bar', desc: 'Top banner with message' },
+  { type: 'gallery', icon: '\u{1F39E}\uFE0F', name: 'Image Gallery', desc: 'Grid/masonry of images' },
+  { type: 'testimonial', icon: '\u{1F4AC}', name: 'Testimonial', desc: 'Quote with attribution' },
+  { type: 'stats', icon: '\u{1F4CA}', name: 'Stats / Numbers', desc: 'Key metrics display' },
+  { type: 'divider', icon: '\u2796', name: 'Divider', desc: 'Decorative line or space' },
+  { type: 'custom_html', icon: '\u{1F517}', name: 'Custom HTML', desc: 'Raw HTML block' },
+];
+
+const SECTION_DEFAULTS = {
+  hero: {
+    background_image: '',
+    overlay_darkness: 50,
+    headline: 'Your Headline Here',
+    subtitle: 'Your subtitle text goes here',
+    button_text: 'Shop Now',
+    button_link: '#shop',
+    text_align: 'left',
+    min_height: 80,
+  },
+  product_grid: {
+    columns: 3,
+    show_price: true,
+    show_badge: true,
+    show_sizes: true,
+    show_add_to_cart: true,
+    filter: 'all',
+    max_products: 8,
+  },
+  text_block: {
+    content: 'Enter your text content here. You can write multiple paragraphs and style them as needed.',
+    text_align: 'left',
+    max_width: 'medium',
+    background_color: '#0a0a0a',
+    text_color: '#f5eedd',
+    padding: 'medium',
+  },
+  image_text: {
+    image: '',
+    image_position: 'left',
+    headline: 'Section Headline',
+    body: 'Describe your content here. Tell your story and connect with your audience.',
+    button_text: '',
+    button_link: '',
+  },
+  blog_posts: {
+    count: 3,
+    layout: 'grid',
+    show_date: true,
+    show_excerpt: true,
+    show_image: true,
+  },
+  newsletter: {
+    heading: 'Join the Community',
+    description: 'Updates on new drops, journal entries, and community events.',
+    button_text: 'Subscribe',
+    success_message: 'Thank you for subscribing!',
+  },
+  featured_product: {
+    product_id: '',
+    layout: 'side_by_side',
+  },
+  announcement: {
+    message: 'Free shipping on orders over $100',
+    background_color: '#cb6305',
+    text_color: '#0a0a0a',
+    link_url: '',
+    dismissible: true,
+  },
+  gallery: {
+    images: [],
+    columns: 3,
+    gap: 'medium',
+    aspect_ratio: 'square',
+  },
+  testimonial: {
+    quote: '"This is the best quality clothing I have ever owned. Every piece tells a story."',
+    attribution_name: 'Customer Name',
+    attribution_title: 'Loyal Customer',
+  },
+  stats: {
+    items: [
+      { number: '500+', label: 'Products Sold' },
+      { number: '100%', label: 'US-Grown Cotton' },
+      { number: '4.9', label: 'Customer Rating' },
+    ],
+  },
+  divider: {
+    style: 'line',
+    color: '#cb6305',
+    height: 40,
+  },
+  custom_html: {
+    html_content: '<!-- Paste your embed code here -->',
+  },
+};
+
+// ===== STATE =====
+let state = {
+  currentPage: 'home',
+  sections: [],
+  editingSectionId: null,
+  undoStack: [],
+  saveTimer: null,
+  isDirty: false,
+};
+
+// Helper: get icon for section type
+function getSectionIcon(type) {
+  const t = SECTION_TEMPLATES.find(t => t.type === type);
+  return t ? t.icon : '\u{1F4C4}';
+}
+
+// Helper: get name for section type
+function getSectionTypeName(type) {
+  const t = SECTION_TEMPLATES.find(t => t.type === type);
+  return t ? t.name : type;
+}
+
+// ===== API HELPERS =====
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (window._authToken || ''),
+    },
+  };
+  if (body) opts.body = JSON.stringify(body);
+
+  try {
+    const res = await fetch('/api/admin' + path, opts);
+    if (res.status === 401) {
+      window.location.href = '/admin.html';
+      return null;
+    }
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error('API Error:', err);
+    // For demo purposes, return mock data when API is not available
+    return null;
+  }
+}
+
+// ===== LOAD SECTIONS =====
+async function loadSections() {
+  const page = state.currentPage;
+  const result = await api('GET', `/pages/${page}/sections`);
+
+  if (result && result.sections) {
+    state.sections = result.sections;
+  } else {
+    // Demo data when no API is available
+    state.sections = getDemoSections();
+  }
+
+  renderSectionsList();
+  updateSectionCount();
+  updateSaveStatus('saved');
+}
+
+function getDemoSections() {
+  return [
+    {
+      id: 'demo-1',
+      type: 'announcement',
+      name: 'Announcement Bar',
+      visible: true,
+      position: 0,
+      config: {
+        message: 'Free shipping on all orders over $100 \u2014 Limited time only',
+        background_color: '#cb6305',
+        text_color: '#0a0a0a',
+        link_url: '#shop',
+        dismissible: true,
+      }
+    },
+    {
+      id: 'demo-2',
+      type: 'hero',
+      name: 'Hero Banner',
+      visible: true,
+      position: 1,
+      config: {
+        background_image: 'https://mercado-goods.com/cdn/shop/files/ambermilla104595-R1-028-12A.jpg?v=1770170660&width=1920',
+        overlay_darkness: 50,
+        headline: 'Rooted in Heritage. Crafted with Intention.',
+        subtitle: 'Clothing and accessories born from culture, made with care, and designed to carry meaning.',
+        button_text: 'Explore the Collection',
+        button_link: '#shop',
+        text_align: 'left',
+        min_height: 100,
+      }
+    },
+    {
+      id: 'demo-3',
+      type: 'product_grid',
+      name: 'Product Grid',
+      visible: true,
+      position: 2,
+      config: {
+        columns: 2,
+        show_price: true,
+        show_badge: true,
+        show_sizes: true,
+        show_add_to_cart: true,
+        filter: 'all',
+        max_products: 4,
+      }
+    },
+    {
+      id: 'demo-4',
+      type: 'image_text',
+      name: 'Our Story',
+      visible: true,
+      position: 3,
+      config: {
+        image: 'https://mercado-goods.com/cdn/shop/articles/ONE_Final_HUrrah-2.png?v=1747258478&width=1200',
+        image_position: 'left',
+        headline: "It's not about perfection. It's about the process.",
+        body: 'Gerardo Mercado is a designer, filmmaker, and creative who built Mercado Goods as a laboratory for self-expression.',
+        button_text: 'Read Our Story',
+        button_link: '#story',
+      }
+    },
+    {
+      id: 'demo-5',
+      type: 'blog_posts',
+      name: 'Journal',
+      visible: true,
+      position: 4,
+      config: {
+        count: 3,
+        layout: 'grid',
+        show_date: true,
+        show_excerpt: true,
+        show_image: true,
+      }
+    },
+    {
+      id: 'demo-6',
+      type: 'newsletter',
+      name: 'Newsletter Signup',
+      visible: true,
+      position: 5,
+      config: {
+        heading: 'Join the Community',
+        description: 'Updates on new drops, journal entries, and community events.',
+        button_text: 'Subscribe',
+        success_message: 'Thank you for subscribing!',
+      }
+    },
+  ];
+}
+
+// ===== RENDER SECTIONS LIST =====
+function renderSectionsList() {
+  const list = document.getElementById('sectionsList');
+
+  if (state.sections.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">\u{1F3A8}</div>
+        <div class="empty-state-title">No sections yet</div>
+        <div class="empty-state-desc">Click "Add Section" below to start building your page.</div>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = state.sections.map((section, index) => `
+    <div class="section-item ${state.editingSectionId === section.id ? 'active' : ''}"
+         draggable="true"
+         data-id="${section.id}"
+         data-index="${index}"
+         onclick="editSection('${section.id}')"
+         ondragstart="onDragStart(event)"
+         ondragover="onDragOver(event)"
+         ondragleave="onDragLeave(event)"
+         ondrop="onDrop(event)"
+         ondragend="onDragEnd(event)">
+      <span class="drag-handle" title="Drag to reorder">\u2807</span>
+      <span class="section-icon">${getSectionIcon(section.type)}</span>
+      <span class="section-name">${escapeHtml(section.name || getSectionTypeName(section.type))}</span>
+      <div class="section-actions">
+        <button class="section-action-btn ${section.visible ? '' : 'hidden-toggle'}"
+                onclick="event.stopPropagation(); toggleVisibility('${section.id}')"
+                title="${section.visible ? 'Hide section' : 'Show section'}">
+          ${section.visible ? '\u{1F441}\uFE0F' : '\u{1F441}\uFE0F\u200D\u{1F5E8}\uFE0F'}
+        </button>
+        <button class="section-action-btn delete-btn"
+                onclick="event.stopPropagation(); deleteSection('${section.id}')"
+                title="Delete section">
+          \u2715
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateSectionCount() {
+  document.getElementById('sectionCount').textContent =
+    state.sections.length + ' section' + (state.sections.length !== 1 ? 's' : '');
+}
+
+// ===== PANEL MODES =====
+function showSections() {
+  document.getElementById('sectionsMode').style.display = '';
+  document.getElementById('templatesMode').style.display = 'none';
+  document.getElementById('settingsMode').style.display = 'none';
+  state.editingSectionId = null;
+  renderSectionsList();
+}
+
+function showTemplates() {
+  document.getElementById('sectionsMode').style.display = 'none';
+  document.getElementById('templatesMode').style.display = '';
+  document.getElementById('settingsMode').style.display = 'none';
+  renderTemplates();
+}
+
+function showSettings(sectionId) {
+  document.getElementById('sectionsMode').style.display = 'none';
+  document.getElementById('templatesMode').style.display = 'none';
+  document.getElementById('settingsMode').style.display = '';
+
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section) return showSections();
+
+  document.getElementById('settingsTitle').textContent = section.name || getSectionTypeName(section.type);
+  renderSettingsPanel(section);
+}
+
+// ===== RENDER TEMPLATES =====
+function renderTemplates() {
+  const grid = document.getElementById('templatesGrid');
+  grid.innerHTML = SECTION_TEMPLATES.map(t => `
+    <div class="template-card" onclick="addSection('${t.type}')">
+      <div class="template-icon">${t.icon}</div>
+      <div class="template-name">${t.name}</div>
+      <div class="template-desc">${t.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ===== ADD SECTION =====
+async function addSection(type) {
+  pushUndo('Add ' + getSectionTypeName(type));
+
+  const newSection = {
+    id: 'section-' + Date.now(),
+    type: type,
+    name: getSectionTypeName(type),
+    visible: true,
+    position: state.sections.length,
+    config: JSON.parse(JSON.stringify(SECTION_DEFAULTS[type] || {})),
+  };
+
+  state.sections.push(newSection);
+
+  // API call
+  await api('POST', `/pages/${state.currentPage}/sections`, {
+    section_type: type,
+    position: newSection.position,
+    config: newSection.config,
+  });
+
+  markDirty();
+  editSection(newSection.id);
+  showToast('Section added', 'success');
+  schedulePreviewRefresh();
+}
+
+// ===== EDIT SECTION =====
+function editSection(id) {
+  state.editingSectionId = id;
+  renderSectionsList();
+  showSettings(id);
+}
+
+// ===== DELETE SECTION =====
+async function deleteSection(id) {
+  const section = state.sections.find(s => s.id === id);
+  if (!section) return;
+
+  pushUndo('Delete ' + (section.name || getSectionTypeName(section.type)));
+
+  state.sections = state.sections.filter(s => s.id !== id);
+  recalcPositions();
+
+  if (state.editingSectionId === id) {
+    state.editingSectionId = null;
+    showSections();
+  }
+
+  renderSectionsList();
+  updateSectionCount();
+  markDirty();
+
+  await api('DELETE', `/pages/${state.currentPage}/sections/${id}`);
+  showToast('Section deleted', 'info');
+  schedulePreviewRefresh();
+}
+
+// ===== TOGGLE VISIBILITY =====
+async function toggleVisibility(id) {
+  const section = state.sections.find(s => s.id === id);
+  if (!section) return;
+
+  pushUndo((section.visible ? 'Hide' : 'Show') + ' ' + section.name);
+
+  section.visible = !section.visible;
+  renderSectionsList();
+  markDirty();
+
+  await api('PUT', `/pages/${state.currentPage}/sections/${id}/visibility`, {
+    visible: section.visible,
+  });
+  schedulePreviewRefresh();
+}
+
+// ===== DRAG AND DROP =====
+let draggedIndex = null;
+
+function onDragStart(e) {
+  const item = e.target.closest('.section-item');
+  draggedIndex = parseInt(item.dataset.index);
+  item.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', item.dataset.id);
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+
+  const item = e.target.closest('.section-item');
+  if (!item) return;
+
+  const rect = item.getBoundingClientRect();
+  const midY = rect.top + rect.height / 2;
+
+  // Clear all indicators
+  document.querySelectorAll('.section-item').forEach(el => {
+    el.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+
+  if (e.clientY < midY) {
+    item.classList.add('drag-over-top');
+  } else {
+    item.classList.add('drag-over-bottom');
+  }
+}
+
+function onDragLeave(e) {
+  const item = e.target.closest('.section-item');
+  if (item) {
+    item.classList.remove('drag-over-top', 'drag-over-bottom');
+  }
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  const item = e.target.closest('.section-item');
+  if (!item || draggedIndex === null) return;
+
+  let targetIndex = parseInt(item.dataset.index);
+  const rect = item.getBoundingClientRect();
+  const midY = rect.top + rect.height / 2;
+  if (e.clientY > midY) targetIndex++;
+
+  if (draggedIndex === targetIndex || draggedIndex === targetIndex - 1) {
+    onDragEnd(e);
+    return;
+  }
+
+  pushUndo('Reorder sections');
+
+  const [moved] = state.sections.splice(draggedIndex, 1);
+  const insertAt = targetIndex > draggedIndex ? targetIndex - 1 : targetIndex;
+  state.sections.splice(insertAt, 0, moved);
+  recalcPositions();
+
+  renderSectionsList();
+  markDirty();
+  schedulePreviewRefresh();
+
+  // API call
+  api('PUT', `/pages/${state.currentPage}/sections/reorder`, {
+    ids: state.sections.map(s => s.id),
+  });
+}
+
+function onDragEnd(e) {
+  draggedIndex = null;
+  document.querySelectorAll('.section-item').forEach(el => {
+    el.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom');
+  });
+}
+
+function recalcPositions() {
+  state.sections.forEach((s, i) => s.position = i);
+}
+
+// ===== RENDER SETTINGS PANEL =====
+function renderSettingsPanel(section) {
+  const panel = document.getElementById('settingsPanel');
+  const c = section.config;
+
+  let html = `
+    <div class="setting-row">
+      <label class="setting-label">Section Name</label>
+      <input class="setting-input" type="text" value="${escapeAttr(section.name)}"
+             onchange="updateSectionName('${section.id}', this.value)">
+    </div>
+    <div class="setting-separator"></div>
+  `;
+
+  switch (section.type) {
+    case 'hero':
+      html += renderHeroSettings(section);
+      break;
+    case 'product_grid':
+      html += renderProductGridSettings(section);
+      break;
+    case 'text_block':
+      html += renderTextBlockSettings(section);
+      break;
+    case 'image_text':
+      html += renderImageTextSettings(section);
+      break;
+    case 'blog_posts':
+      html += renderBlogPostsSettings(section);
+      break;
+    case 'newsletter':
+      html += renderNewsletterSettings(section);
+      break;
+    case 'featured_product':
+      html += renderFeaturedProductSettings(section);
+      break;
+    case 'announcement':
+      html += renderAnnouncementSettings(section);
+      break;
+    case 'gallery':
+      html += renderGallerySettings(section);
+      break;
+    case 'testimonial':
+      html += renderTestimonialSettings(section);
+      break;
+    case 'stats':
+      html += renderStatsSettings(section);
+      break;
+    case 'divider':
+      html += renderDividerSettings(section);
+      break;
+    case 'custom_html':
+      html += renderCustomHtmlSettings(section);
+      break;
+  }
+
+  panel.innerHTML = html;
+}
+
+// ===== SETTING RENDERERS =====
+
+function renderHeroSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Background</div>
+      <div class="setting-row">
+        <label class="setting-label">Background Image</label>
+        ${renderUploadZone(section.id, 'background_image', c.background_image)}
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Overlay Darkness</label>
+        <div class="setting-slider-wrap">
+          <input class="setting-slider" type="range" min="0" max="100" value="${c.overlay_darkness}"
+                 oninput="this.nextElementSibling.textContent = this.value + '%'; updateConfig('${section.id}', 'overlay_darkness', parseInt(this.value))">
+          <span class="slider-value">${c.overlay_darkness}%</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Min Height</label>
+        <div class="setting-slider-wrap">
+          <input class="setting-slider" type="range" min="50" max="100" value="${c.min_height}"
+                 oninput="this.nextElementSibling.textContent = this.value + 'vh'; updateConfig('${section.id}', 'min_height', parseInt(this.value))">
+          <span class="slider-value">${c.min_height}vh</span>
+        </div>
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Content</div>
+      <div class="setting-row">
+        <label class="setting-label">Headline</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.headline)}"
+               oninput="updateConfig('${section.id}', 'headline', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Subtitle</label>
+        <textarea class="setting-input" rows="3"
+                  oninput="updateConfig('${section.id}', 'subtitle', this.value)">${escapeHtml(c.subtitle)}</textarea>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Button Text</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.button_text)}"
+               oninput="updateConfig('${section.id}', 'button_text', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Button Link</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.button_link)}" placeholder="#shop or /page"
+               oninput="updateConfig('${section.id}', 'button_link', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Text Alignment</label>
+        <div class="btn-group">
+          <button class="btn-group-item ${c.text_align === 'left' ? 'active' : ''}" onclick="updateConfig('${section.id}', 'text_align', 'left'); reRenderSettings('${section.id}')">Left</button>
+          <button class="btn-group-item ${c.text_align === 'center' ? 'active' : ''}" onclick="updateConfig('${section.id}', 'text_align', 'center'); reRenderSettings('${section.id}')">Center</button>
+          <button class="btn-group-item ${c.text_align === 'right' ? 'active' : ''}" onclick="updateConfig('${section.id}', 'text_align', 'right'); reRenderSettings('${section.id}')">Right</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProductGridSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Layout</div>
+      <div class="setting-row">
+        <label class="setting-label">Columns</label>
+        <div class="btn-group">
+          ${[2,3,4].map(n => `
+            <button class="btn-group-item ${c.columns === n ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'columns', ${n}); reRenderSettings('${section.id}')">${n}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Max Products</label>
+        <input class="setting-input" type="number" min="1" max="24" value="${c.max_products}"
+               oninput="updateConfig('${section.id}', 'max_products', parseInt(this.value))">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Filter</label>
+        <select class="setting-select" onchange="updateConfig('${section.id}', 'filter', this.value)">
+          <option value="all" ${c.filter === 'all' ? 'selected' : ''}>All Products</option>
+          <option value="available" ${c.filter === 'available' ? 'selected' : ''}>Available Only</option>
+          <option value="tees" ${c.filter === 'tees' ? 'selected' : ''}>Tees</option>
+          <option value="outerwear" ${c.filter === 'outerwear' ? 'selected' : ''}>Outerwear</option>
+          <option value="accessories" ${c.filter === 'accessories' ? 'selected' : ''}>Accessories</option>
+        </select>
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Show / Hide</div>
+      ${renderToggle(section.id, 'show_price', 'Price', c.show_price)}
+      ${renderToggle(section.id, 'show_badge', 'Status Badge', c.show_badge)}
+      ${renderToggle(section.id, 'show_sizes', 'Sizes', c.show_sizes)}
+      ${renderToggle(section.id, 'show_add_to_cart', 'Add to Cart Button', c.show_add_to_cart)}
+    </div>
+  `;
+}
+
+function renderTextBlockSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Content</div>
+      <div class="setting-row">
+        <label class="setting-label">Text Content</label>
+        <textarea class="setting-input" rows="6"
+                  oninput="updateConfig('${section.id}', 'content', this.value)">${escapeHtml(c.content)}</textarea>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Text Alignment</label>
+        <div class="btn-group">
+          ${['left','center','right'].map(a => `
+            <button class="btn-group-item ${c.text_align === a ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'text_align', '${a}'); reRenderSettings('${section.id}')">${capitalize(a)}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Max Width</label>
+        <div class="btn-group">
+          ${['narrow','medium','full'].map(w => `
+            <button class="btn-group-item ${c.max_width === w ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'max_width', '${w}'); reRenderSettings('${section.id}')">${capitalize(w)}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Padding</label>
+        <div class="btn-group">
+          ${['small','medium','large'].map(p => `
+            <button class="btn-group-item ${c.padding === p ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'padding', '${p}'); reRenderSettings('${section.id}')">${capitalize(p)}</button>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Colors</div>
+      <div class="setting-row">
+        <label class="setting-label">Background Color</label>
+        <div class="setting-color-wrap">
+          <input class="setting-color" type="color" value="${c.background_color}"
+                 oninput="updateConfig('${section.id}', 'background_color', this.value); this.nextElementSibling.textContent = this.value">
+          <span class="color-hex">${c.background_color}</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Text Color</label>
+        <div class="setting-color-wrap">
+          <input class="setting-color" type="color" value="${c.text_color}"
+                 oninput="updateConfig('${section.id}', 'text_color', this.value); this.nextElementSibling.textContent = this.value">
+          <span class="color-hex">${c.text_color}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderImageTextSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Image</div>
+      <div class="setting-row">
+        <label class="setting-label">Image</label>
+        ${renderUploadZone(section.id, 'image', c.image)}
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Image Position</label>
+        <div class="btn-group">
+          <button class="btn-group-item ${c.image_position === 'left' ? 'active' : ''}"
+                  onclick="updateConfig('${section.id}', 'image_position', 'left'); reRenderSettings('${section.id}')">Left</button>
+          <button class="btn-group-item ${c.image_position === 'right' ? 'active' : ''}"
+                  onclick="updateConfig('${section.id}', 'image_position', 'right'); reRenderSettings('${section.id}')">Right</button>
+        </div>
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Content</div>
+      <div class="setting-row">
+        <label class="setting-label">Headline</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.headline)}"
+               oninput="updateConfig('${section.id}', 'headline', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Body Text</label>
+        <textarea class="setting-input" rows="4"
+                  oninput="updateConfig('${section.id}', 'body', this.value)">${escapeHtml(c.body)}</textarea>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Button Text <span style="color:var(--cream-30);font-weight:400;">(optional)</span></label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.button_text)}" placeholder="Leave empty for no button"
+               oninput="updateConfig('${section.id}', 'button_text', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Button Link</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.button_link)}" placeholder="#section or /page"
+               oninput="updateConfig('${section.id}', 'button_link', this.value)">
+      </div>
+    </div>
+  `;
+}
+
+function renderBlogPostsSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Layout</div>
+      <div class="setting-row">
+        <label class="setting-label">Number of Posts</label>
+        <div class="setting-slider-wrap">
+          <input class="setting-slider" type="range" min="1" max="6" value="${c.count}"
+                 oninput="this.nextElementSibling.textContent = this.value; updateConfig('${section.id}', 'count', parseInt(this.value))">
+          <span class="slider-value">${c.count}</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Layout</label>
+        <div class="btn-group">
+          <button class="btn-group-item ${c.layout === 'grid' ? 'active' : ''}"
+                  onclick="updateConfig('${section.id}', 'layout', 'grid'); reRenderSettings('${section.id}')">Grid</button>
+          <button class="btn-group-item ${c.layout === 'list' ? 'active' : ''}"
+                  onclick="updateConfig('${section.id}', 'layout', 'list'); reRenderSettings('${section.id}')">List</button>
+        </div>
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Show / Hide</div>
+      ${renderToggle(section.id, 'show_date', 'Date', c.show_date)}
+      ${renderToggle(section.id, 'show_excerpt', 'Excerpt', c.show_excerpt)}
+      ${renderToggle(section.id, 'show_image', 'Image', c.show_image)}
+    </div>
+  `;
+}
+
+function renderNewsletterSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Content</div>
+      <div class="setting-row">
+        <label class="setting-label">Heading</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.heading)}"
+               oninput="updateConfig('${section.id}', 'heading', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Description</label>
+        <textarea class="setting-input" rows="3"
+                  oninput="updateConfig('${section.id}', 'description', this.value)">${escapeHtml(c.description)}</textarea>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Button Text</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.button_text)}"
+               oninput="updateConfig('${section.id}', 'button_text', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Success Message</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.success_message)}"
+               oninput="updateConfig('${section.id}', 'success_message', this.value)">
+      </div>
+    </div>
+  `;
+}
+
+function renderFeaturedProductSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Product</div>
+      <div class="setting-row">
+        <label class="setting-label">Select Product</label>
+        <select class="setting-select" id="productSelect"
+                onchange="updateConfig('${section.id}', 'product_id', this.value)">
+          <option value="">-- Choose a product --</option>
+          <option value="camisa-blanca" ${c.product_id === 'camisa-blanca' ? 'selected' : ''}>La Camisa Blanca</option>
+          <option value="sudadera-negra" ${c.product_id === 'sudadera-negra' ? 'selected' : ''}>La Sudadera Negra</option>
+          <option value="el-gaban" ${c.product_id === 'el-gaban' ? 'selected' : ''}>El Gaban</option>
+          <option value="tote-bag" ${c.product_id === 'tote-bag' ? 'selected' : ''}>La Tote Bag</option>
+        </select>
+        <p class="setting-note">Products are loaded from your catalog</p>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Layout</label>
+        <div class="btn-group">
+          <button class="btn-group-item ${c.layout === 'side_by_side' ? 'active' : ''}"
+                  onclick="updateConfig('${section.id}', 'layout', 'side_by_side'); reRenderSettings('${section.id}')">Side by Side</button>
+          <button class="btn-group-item ${c.layout === 'stacked' ? 'active' : ''}"
+                  onclick="updateConfig('${section.id}', 'layout', 'stacked'); reRenderSettings('${section.id}')">Stacked</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAnnouncementSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Content</div>
+      <div class="setting-row">
+        <label class="setting-label">Message</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.message)}"
+               oninput="updateConfig('${section.id}', 'message', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Link URL <span style="color:var(--cream-30);font-weight:400;">(optional)</span></label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.link_url)}" placeholder="https://..."
+               oninput="updateConfig('${section.id}', 'link_url', this.value)">
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Appearance</div>
+      <div class="setting-row">
+        <label class="setting-label">Background Color</label>
+        <div class="setting-color-wrap">
+          <input class="setting-color" type="color" value="${c.background_color}"
+                 oninput="updateConfig('${section.id}', 'background_color', this.value); this.nextElementSibling.textContent = this.value">
+          <span class="color-hex">${c.background_color}</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Text Color</label>
+        <div class="setting-color-wrap">
+          <input class="setting-color" type="color" value="${c.text_color}"
+                 oninput="updateConfig('${section.id}', 'text_color', this.value); this.nextElementSibling.textContent = this.value">
+          <span class="color-hex">${c.text_color}</span>
+        </div>
+      </div>
+      ${renderToggle(section.id, 'dismissible', 'Dismissible', c.dismissible)}
+    </div>
+  `;
+}
+
+function renderGallerySettings(section) {
+  const c = section.config;
+  const images = c.images || [];
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Images</div>
+      <div class="setting-row">
+        ${images.length > 0 ? `
+          <div class="gallery-images">
+            ${images.map((img, i) => `
+              <div class="gallery-thumb">
+                <img src="${escapeAttr(img)}" alt="">
+                <button class="upload-remove" onclick="removeGalleryImage('${section.id}', ${i})">\u2715</button>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        ${renderUploadZone(section.id, 'gallery_add', '', true)}
+      </div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Layout</div>
+      <div class="setting-row">
+        <label class="setting-label">Columns</label>
+        <div class="btn-group">
+          ${[2,3,4].map(n => `
+            <button class="btn-group-item ${c.columns === n ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'columns', ${n}); reRenderSettings('${section.id}')">${n}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Gap Size</label>
+        <div class="btn-group">
+          ${['small','medium','large'].map(g => `
+            <button class="btn-group-item ${c.gap === g ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'gap', '${g}'); reRenderSettings('${section.id}')">${capitalize(g)}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Aspect Ratio</label>
+        <select class="setting-select" onchange="updateConfig('${section.id}', 'aspect_ratio', this.value)">
+          <option value="square" ${c.aspect_ratio === 'square' ? 'selected' : ''}>Square (1:1)</option>
+          <option value="4:3" ${c.aspect_ratio === '4:3' ? 'selected' : ''}>4:3</option>
+          <option value="3:2" ${c.aspect_ratio === '3:2' ? 'selected' : ''}>3:2</option>
+          <option value="auto" ${c.aspect_ratio === 'auto' ? 'selected' : ''}>Auto</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+function renderTestimonialSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Quote</div>
+      <div class="setting-row">
+        <label class="setting-label">Quote Text</label>
+        <textarea class="setting-input" rows="4"
+                  oninput="updateConfig('${section.id}', 'quote', this.value)">${escapeHtml(c.quote)}</textarea>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Name</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.attribution_name)}"
+               oninput="updateConfig('${section.id}', 'attribution_name', this.value)">
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Title / Role</label>
+        <input class="setting-input" type="text" value="${escapeAttr(c.attribution_title)}"
+               oninput="updateConfig('${section.id}', 'attribution_title', this.value)">
+      </div>
+    </div>
+  `;
+}
+
+function renderStatsSettings(section) {
+  const c = section.config;
+  const items = c.items || [];
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Stats Items</div>
+      <div class="stat-items-list" id="statItemsList">
+        ${items.map((item, i) => `
+          <div class="stat-item-row">
+            <input class="setting-input" type="text" value="${escapeAttr(item.number)}" placeholder="100+"
+                   oninput="updateStatItem('${section.id}', ${i}, 'number', this.value)">
+            <input class="setting-input" type="text" value="${escapeAttr(item.label)}" placeholder="Label"
+                   oninput="updateStatItem('${section.id}', ${i}, 'label', this.value)">
+            <button class="stat-remove-btn" onclick="removeStatItem('${section.id}', ${i})">\u2715</button>
+          </div>
+        `).join('')}
+      </div>
+      <button class="add-stat-btn" onclick="addStatItem('${section.id}')">+ Add Stat</button>
+    </div>
+  `;
+}
+
+function renderDividerSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Style</div>
+      <div class="setting-row">
+        <label class="setting-label">Divider Style</label>
+        <div class="btn-group">
+          ${['line','dots','space'].map(s => `
+            <button class="btn-group-item ${c.style === s ? 'active' : ''}"
+                    onclick="updateConfig('${section.id}', 'style', '${s}'); reRenderSettings('${section.id}')">${capitalize(s)}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Color</label>
+        <div class="setting-color-wrap">
+          <input class="setting-color" type="color" value="${c.color}"
+                 oninput="updateConfig('${section.id}', 'color', this.value); this.nextElementSibling.textContent = this.value">
+          <span class="color-hex">${c.color}</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <label class="setting-label">Height / Spacing</label>
+        <div class="setting-slider-wrap">
+          <input class="setting-slider" type="range" min="10" max="120" value="${c.height}"
+                 oninput="this.nextElementSibling.textContent = this.value + 'px'; updateConfig('${section.id}', 'height', parseInt(this.value))">
+          <span class="slider-value">${c.height}px</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCustomHtmlSettings(section) {
+  const c = section.config;
+  return `
+    <div class="setting-group">
+      <div class="setting-group-title">Custom HTML</div>
+      <div class="setting-row">
+        <label class="setting-label">HTML Code</label>
+        <textarea class="setting-input code-input" rows="10"
+                  oninput="updateConfig('${section.id}', 'html_content', this.value)">${escapeHtml(c.html_content)}</textarea>
+        <p class="setting-note">This is for embedding external widgets like Omnisend popups, custom forms, or any HTML/JS content.</p>
+      </div>
+    </div>
+  `;
+}
+
+// ===== SETTING HELPERS =====
+
+function renderToggle(sectionId, key, label, value) {
+  return `
+    <div class="setting-toggle-wrap">
+      <span class="setting-toggle-label">${label}</span>
+      <label class="toggle-switch">
+        <input type="checkbox" ${value ? 'checked' : ''}
+               onchange="updateConfig('${sectionId}', '${key}', this.checked)">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+  `;
+}
+
+function renderUploadZone(sectionId, key, currentImage, isGalleryAdd) {
+  const hasImage = currentImage && !isGalleryAdd;
+  const zoneId = `upload-${sectionId}-${key}`;
+  return `
+    <div class="upload-zone ${hasImage ? 'has-image' : ''}" id="${zoneId}"
+         onclick="document.getElementById('file-${zoneId}').click()"
+         ondragover="event.preventDefault(); this.classList.add('drag-active')"
+         ondragleave="this.classList.remove('drag-active')"
+         ondrop="handleFileDrop(event, '${sectionId}', '${key}', ${isGalleryAdd ? 'true' : 'false'})">
+      ${hasImage ? `
+        <img src="${escapeAttr(currentImage)}" alt="Uploaded image">
+        <button class="upload-remove" onclick="event.stopPropagation(); removeImage('${sectionId}', '${key}')">\u2715</button>
+      ` : `
+        <div class="upload-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span class="upload-text">${isGalleryAdd ? 'Add images' : 'Drop image or click to upload'}</span>
+          <span class="upload-hint">JPG, PNG, WebP up to 5MB</span>
+        </div>
+      `}
+      <input type="file" id="file-${zoneId}" accept="image/*" ${isGalleryAdd ? 'multiple' : ''}
+             onchange="handleFileSelect(event, '${sectionId}', '${key}', ${isGalleryAdd ? 'true' : 'false'})">
+      <div class="upload-progress" style="width: 0%"></div>
+    </div>
+  `;
+}
+
+// ===== CONFIG UPDATE =====
+function updateConfig(sectionId, key, value) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section) return;
+
+  section.config[key] = value;
+  markDirty();
+  schedulePreviewRefresh();
+  scheduleSave(sectionId);
+}
+
+function updateSectionName(sectionId, name) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section) return;
+
+  section.name = name;
+  document.getElementById('settingsTitle').textContent = name;
+  markDirty();
+}
+
+function reRenderSettings(sectionId) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (section) renderSettingsPanel(section);
+}
+
+// Stats helpers
+function updateStatItem(sectionId, index, key, value) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section || !section.config.items) return;
+  section.config.items[index][key] = value;
+  markDirty();
+  schedulePreviewRefresh();
+}
+
+function addStatItem(sectionId) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section) return;
+  if (!section.config.items) section.config.items = [];
+  section.config.items.push({ number: '0', label: 'New Stat' });
+  markDirty();
+  reRenderSettings(sectionId);
+  schedulePreviewRefresh();
+}
+
+function removeStatItem(sectionId, index) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section || !section.config.items) return;
+  section.config.items.splice(index, 1);
+  markDirty();
+  reRenderSettings(sectionId);
+  schedulePreviewRefresh();
+}
+
+// Gallery helpers
+function removeGalleryImage(sectionId, index) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section || !section.config.images) return;
+  section.config.images.splice(index, 1);
+  markDirty();
+  reRenderSettings(sectionId);
+  schedulePreviewRefresh();
+}
+
+// ===== IMAGE UPLOAD =====
+function handleFileDrop(e, sectionId, key, isGalleryAdd) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-active');
+  const files = e.dataTransfer.files;
+  if (files.length) {
+    processFiles(files, sectionId, key, isGalleryAdd);
+  }
+}
+
+function handleFileSelect(e, sectionId, key, isGalleryAdd) {
+  const files = e.target.files;
+  if (files.length) {
+    processFiles(files, sectionId, key, isGalleryAdd);
+  }
+}
+
+async function processFiles(files, sectionId, key, isGalleryAdd) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section) return;
+
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('File too large. Max 5MB.', 'error');
+      continue;
+    }
+
+    // Show progress
+    const zoneId = `upload-${sectionId}-${key}`;
+    const zone = document.getElementById(zoneId);
+    const progressBar = zone ? zone.querySelector('.upload-progress') : null;
+
+    // Create local preview immediately
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+
+      if (isGalleryAdd) {
+        if (!section.config.images) section.config.images = [];
+        section.config.images.push(dataUrl);
+      } else {
+        section.config[key] = dataUrl;
+      }
+
+      markDirty();
+      reRenderSettings(sectionId);
+      schedulePreviewRefresh();
+    };
+    reader.readAsDataURL(file);
+
+    // Simulate progress for now (would be real upload with API)
+    if (progressBar) {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 20;
+        progressBar.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => { progressBar.style.width = '0%'; }, 300);
+        }
+      }, 100);
+    }
+
+    // Upload to server
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + (window._authToken || ''),
+        },
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          if (isGalleryAdd) {
+            // Replace last added data URL with real URL
+            const imgs = section.config.images;
+            if (imgs.length > 0) imgs[imgs.length - 1] = data.url;
+          } else {
+            section.config[key] = data.url;
+          }
+          reRenderSettings(sectionId);
+        }
+      }
+    } catch (err) {
+      // Local preview still works, just no server upload
+      console.log('Upload API not available, using local preview');
+    }
+  }
+
+  showToast('Image uploaded', 'success');
+}
+
+function removeImage(sectionId, key) {
+  const section = state.sections.find(s => s.id === sectionId);
+  if (!section) return;
+  section.config[key] = '';
+  markDirty();
+  reRenderSettings(sectionId);
+  schedulePreviewRefresh();
+}
+
+// ===== SAVE / PUBLISH =====
+let saveTimeout = null;
+
+function scheduleSave(sectionId) {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async () => {
+    updateSaveStatus('saving');
+    const section = state.sections.find(s => s.id === sectionId);
+    if (section) {
+      await api('PUT', `/pages/${state.currentPage}/sections/${sectionId}`, {
+        config: section.config,
+      });
+    }
+    updateSaveStatus('saved');
+    state.isDirty = false;
+  }, 1500);
+}
+
+async function saveAll() {
+  updateSaveStatus('saving');
+
+  for (const section of state.sections) {
+    await api('PUT', `/pages/${state.currentPage}/sections/${section.id}`, {
+      config: section.config,
+      name: section.name,
+      visible: section.visible,
+    });
+  }
+
+  await api('PUT', `/pages/${state.currentPage}/sections/reorder`, {
+    ids: state.sections.map(s => s.id),
+  });
+
+  updateSaveStatus('saved');
+  state.isDirty = false;
+  showToast('All changes saved', 'success');
+}
+
+async function publishAll() {
+  await saveAll();
+  showToast('Page published successfully!', 'success');
+}
+
+function discardChanges() {
+  if (!state.isDirty) {
+    showToast('No changes to discard', 'info');
+    return;
+  }
+  if (confirm('Discard all unsaved changes? This cannot be undone.')) {
+    loadSections();
+    showSections();
+    showToast('Changes discarded', 'info');
+  }
+}
+
+// ===== SAVE STATUS =====
+function updateSaveStatus(status) {
+  const dot = document.getElementById('saveDot');
+  const text = document.getElementById('saveText');
+
+  dot.className = 'save-dot ' + status;
+
+  switch (status) {
+    case 'saved':
+      text.textContent = 'Saved';
+      break;
+    case 'saving':
+      text.textContent = 'Saving...';
+      break;
+    case 'unsaved':
+      text.textContent = 'Unsaved changes';
+      break;
+  }
+}
+
+function markDirty() {
+  state.isDirty = true;
+  updateSaveStatus('unsaved');
+}
+
+// ===== UNDO =====
+function pushUndo(description) {
+  state.undoStack.push({
+    description,
+    sections: JSON.parse(JSON.stringify(state.sections)),
+    editingSectionId: state.editingSectionId,
+  });
+
+  // Keep max 10 states
+  if (state.undoStack.length > 10) {
+    state.undoStack.shift();
+  }
+
+  document.getElementById('undoBtn').disabled = false;
+}
+
+function undoAction() {
+  if (state.undoStack.length === 0) return;
+
+  const prev = state.undoStack.pop();
+  state.sections = prev.sections;
+  state.editingSectionId = prev.editingSectionId;
+
+  if (state.editingSectionId) {
+    renderSectionsList();
+    showSettings(state.editingSectionId);
+  } else {
+    showSections();
+  }
+
+  updateSectionCount();
+  markDirty();
+  schedulePreviewRefresh();
+  showToast('Undone: ' + prev.description, 'info');
+
+  if (state.undoStack.length === 0) {
+    document.getElementById('undoBtn').disabled = true;
+  }
+}
+
+// ===== DEVICE PREVIEW =====
+function setDevice(device) {
+  document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.device-btn[data-device="${device}"]`).classList.add('active');
+
+  const frame = document.getElementById('previewFrame');
+  switch (device) {
+    case 'desktop':
+      frame.style.width = '100%';
+      frame.style.maxWidth = 'none';
+      break;
+    case 'tablet':
+      frame.style.width = '768px';
+      frame.style.maxWidth = '768px';
+      break;
+    case 'mobile':
+      frame.style.width = '375px';
+      frame.style.maxWidth = '375px';
+      break;
+  }
+}
+
+// ===== PREVIEW REFRESH =====
+let previewRefreshTimer = null;
+
+function schedulePreviewRefresh() {
+  clearTimeout(previewRefreshTimer);
+  previewRefreshTimer = setTimeout(refreshPreview, 500);
+}
+
+function refreshPreview() {
+  const iframe = document.getElementById('previewIframe');
+  const loading = document.getElementById('previewLoading');
+  loading.classList.remove('hidden');
+
+  // Rebuild the preview HTML and inject it into the iframe
+  const previewHtml = buildPreviewHtml();
+
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open();
+    doc.write(previewHtml);
+    doc.close();
+
+    setTimeout(() => {
+      loading.classList.add('hidden');
+    }, 300);
+  } catch (err) {
+    // Fallback: reload iframe
+    iframe.src = '/index.html?preview=true&t=' + Date.now();
+    iframe.onload = () => {
+      loading.classList.add('hidden');
+    };
+  }
+}
+
+function buildPreviewHtml() {
+  const sections = state.sections.filter(s => s.visible);
+
+  let bodyHtml = '';
+  for (const section of sections) {
+    bodyHtml += renderSectionPreview(section);
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Assistant:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a; --cream: #f5eedd; --orange: #cb6305;
+      --orange-dim: rgba(203, 99, 5, 0.4); --navy: #08264b;
+      --cream-50: rgba(245, 238, 221, 0.5); --cream-30: rgba(245, 238, 221, 0.3);
+      --cream-15: rgba(245, 238, 221, 0.15); --cream-08: rgba(245, 238, 221, 0.08);
+      --cream-04: rgba(245, 238, 221, 0.04);
+      --display: 'UnifrakturMaguntia', cursive; --body: 'Assistant', sans-serif;
+      --serif: 'Cormorant Garamond', serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--cream); font-family: var(--body); font-weight: 300; -webkit-font-smoothing: antialiased; }
+
+    /* Nav */
+    nav { padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,10,0.92); border-bottom: 1px solid rgba(245,238,221,0.06); }
+    .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .nav-logo img { height: 40px; width: auto; filter: brightness(1.3) sepia(0.2); }
+    .nav-logo-text { font-family: var(--display); font-size: 1.4rem; color: var(--cream); letter-spacing: 1px; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { color: var(--cream); text-decoration: none; font-size: 0.82rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+
+    /* Section commons */
+    .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: var(--orange); margin-bottom: 20px; }
+    .section-title { font-family: var(--display); font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1.3; margin-bottom: 24px; }
+    .section-line { width: 100px; height: 1px; background: var(--orange-dim); margin: 40px 0; }
+
+    /* Hero */
+    .hero { position: relative; display: flex; align-items: flex-end; justify-content: flex-start; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay { position: absolute; inset: 0; z-index: 1; }
+    .hero-content { position: relative; z-index: 2; padding: 0 80px 100px; max-width: 900px; width: 100%; }
+    .hero-title { font-family: var(--display); font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1.15; margin-bottom: 24px; text-shadow: 0 2px 20px rgba(0,0,0,0.6); }
+    .hero-subtitle { font-family: var(--serif); font-size: 1.3rem; font-weight: 300; font-style: italic; color: var(--cream-50); max-width: 500px; line-height: 1.7; }
+    .hero-cta { margin-top: 36px; }
+    .hero-cta a { display: inline-block; color: var(--cream); text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; padding: 16px 48px; border: 1px solid var(--orange-dim); transition: all 0.4s ease; }
+    .hero-cta a:hover { background: var(--orange); border-color: var(--orange); color: var(--black); }
+
+    /* Product grid */
+    .products-section { padding: 100px 80px; }
+    .products-grid { display: grid; gap: 32px; margin-top: 40px; }
+    .product-card { overflow: hidden; }
+    .product-image-wrap { position: relative; overflow: hidden; aspect-ratio: 3/4; background: var(--cream-04); }
+    .product-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .product-badge { position: absolute; top: 16px; left: 16px; font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--cream); background: rgba(10,10,10,0.6); backdrop-filter: blur(10px); padding: 8px 14px; }
+    .product-info { padding: 18px 4px 0; }
+    .product-name { font-family: var(--display); font-size: 1.3rem; color: var(--cream); margin-bottom: 6px; }
+    .product-price { font-weight: 700; font-size: 1.1rem; color: var(--cream); letter-spacing: 1px; margin-bottom: 14px; }
+    .product-btn { width: 100%; padding: 14px 24px; font-family: var(--body); font-size: 0.78rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; border: none; cursor: pointer; background: var(--orange); color: var(--black); }
+
+    /* Text block */
+    .text-block-section { display: flex; justify-content: center; }
+    .text-block-inner { line-height: 1.8; font-size: 1.05rem; }
+    .text-block-inner.narrow { max-width: 600px; }
+    .text-block-inner.medium { max-width: 800px; }
+    .text-block-inner.full { max-width: 100%; }
+    .text-block-inner p { margin-bottom: 1em; }
+
+    /* Image + Text */
+    .image-text-section { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 60vh; }
+    .image-text-section .it-image { overflow: hidden; }
+    .image-text-section .it-image img { width: 100%; height: 100%; object-fit: cover; }
+    .image-text-section .it-text { display: flex; flex-direction: column; justify-content: center; padding: 60px 80px; background: var(--cream-04); }
+    .image-text-section .it-headline { font-family: var(--display); font-size: 2.4rem; line-height: 1.3; margin-bottom: 20px; }
+    .image-text-section .it-body { font-family: var(--serif); font-size: 1.15rem; font-style: italic; color: var(--cream-50); line-height: 1.8; margin-bottom: 24px; }
+    .image-text-section .it-btn { display: inline-block; color: var(--cream); text-decoration: none; font-size: 0.78rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 14px 36px; border: 1px solid var(--orange-dim); }
+
+    /* Blog posts */
+    .blog-section { padding: 100px 80px; }
+    .blog-grid { display: grid; gap: 32px; margin-top: 40px; }
+    .blog-card { text-decoration: none; color: inherit; }
+    .blog-image { overflow: hidden; aspect-ratio: 4/3; margin-bottom: 20px; background: var(--cream-04); }
+    .blog-image img { width: 100%; height: 100%; object-fit: cover; }
+    .blog-date { font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-30); margin-bottom: 10px; }
+    .blog-title { font-family: var(--display); font-size: 1.2rem; color: var(--cream); margin-bottom: 10px; line-height: 1.4; }
+    .blog-excerpt { font-family: var(--serif); font-size: 0.95rem; font-style: italic; color: var(--cream-30); line-height: 1.7; }
+
+    .blog-list .blog-card { display: flex; gap: 24px; align-items: center; }
+    .blog-list .blog-image { flex-shrink: 0; width: 200px; margin-bottom: 0; }
+
+    /* Newsletter */
+    .newsletter-section { text-align: center; padding: 120px 80px; border-top: 1px solid var(--cream-08); border-bottom: 1px solid var(--cream-08); }
+    .newsletter-form { display: flex; max-width: 520px; margin: 0 auto; margin-top: 40px; border: 1px solid var(--cream-15); overflow: hidden; }
+    .newsletter-form input { flex: 1; padding: 18px 24px; background: transparent; border: none; color: var(--cream); font-family: var(--body); font-size: 0.9rem; outline: none; }
+    .newsletter-form input::placeholder { color: var(--cream-30); letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem; }
+    .newsletter-form button { padding: 18px 36px; background: var(--orange); border: none; color: var(--black); font-family: var(--body); font-size: 0.75rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; }
+
+    /* Announcement */
+    .announcement-bar { padding: 12px 24px; text-align: center; font-size: 0.82rem; font-weight: 600; letter-spacing: 1px; position: relative; }
+    .announcement-bar a { color: inherit; text-decoration: underline; }
+    .announcement-dismiss { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; color: inherit; cursor: pointer; opacity: 0.6; font-size: 1.1rem; }
+
+    /* Gallery */
+    .gallery-section { padding: 80px; }
+    .gallery-grid { display: grid; }
+    .gallery-grid img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Testimonial */
+    .testimonial-section { padding: 120px 80px; text-align: center; border-top: 1px solid var(--cream-08); border-bottom: 1px solid var(--cream-08); }
+    .testimonial-quote { font-family: var(--serif); font-size: 1.8rem; font-style: italic; color: var(--cream); line-height: 1.6; max-width: 700px; margin: 0 auto 32px; position: relative; }
+    .testimonial-quote::before { content: '\\201C'; position: absolute; top: -40px; left: -20px; font-size: 6rem; color: var(--orange); opacity: 0.15; font-family: var(--serif); line-height: 1; }
+    .testimonial-name { font-weight: 700; font-size: 0.9rem; color: var(--cream); letter-spacing: 2px; text-transform: uppercase; }
+    .testimonial-role { font-family: var(--serif); font-size: 0.85rem; font-style: italic; color: var(--cream-30); margin-top: 6px; }
+
+    /* Stats */
+    .stats-section { padding: 80px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; border-top: 1px solid var(--cream-08); border-bottom: 1px solid var(--cream-08); }
+    .stat-item { text-align: center; }
+    .stat-number { font-family: var(--display); font-size: 2.8rem; color: var(--orange); margin-bottom: 8px; }
+    .stat-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--cream-50); }
+
+    /* Divider */
+    .divider-section { display: flex; align-items: center; justify-content: center; }
+    .divider-line { width: 100px; height: 1px; }
+    .divider-dots { display: flex; gap: 8px; justify-content: center; }
+    .divider-dots span { width: 4px; height: 4px; border-radius: 50%; }
+
+    /* Featured product */
+    .featured-section { padding: 100px 80px; }
+    .featured-inner { display: grid; gap: 60px; align-items: center; max-width: 1000px; margin: 0 auto; }
+    .featured-inner.side-by-side { grid-template-columns: 1fr 1fr; }
+    .featured-inner.stacked { grid-template-columns: 1fr; max-width: 600px; text-align: center; }
+    .featured-image { aspect-ratio: 3/4; overflow: hidden; background: var(--cream-04); }
+    .featured-image img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Custom HTML */
+    .custom-html-section { padding: 40px 80px; }
+
+    /* Footer */
+    footer { padding: 60px 80px 32px; border-top: 1px solid var(--cream-08); }
+    .footer-brand-name { font-family: var(--display); font-size: 1.4rem; margin-bottom: 12px; }
+    .footer-copy { font-size: 0.75rem; color: var(--cream-30); }
+
+    @media (max-width: 768px) {
+      .hero-content { padding: 0 24px 60px; }
+      .products-section, .blog-section, .gallery-section, .featured-section, .custom-html-section { padding: 60px 24px; }
+      .image-text-section { grid-template-columns: 1fr; }
+      .image-text-section .it-text { padding: 40px 24px; }
+      .newsletter-section { padding: 60px 24px; }
+      .newsletter-form { flex-direction: column; }
+      .stats-section { padding: 60px 24px; gap: 40px; }
+      .testimonial-section { padding: 60px 24px; }
+      footer { padding: 40px 24px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="https://mercado-goods.com/cdn/shop/files/Gallo_design_width_22.5_Gallo_Design_Length-4.png?v=1739886113&width=300" alt="Mercado Goods">
+      <span class="nav-logo-text">Mercado Goods</span>
+    </a>
+    <div class="nav-links">
+      <a href="#shop">Shop</a>
+      <a href="#story">Story</a>
+      <a href="#journal">Journal</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+  ${bodyHtml}
+  <footer>
+    <div class="footer-brand-name">Mercado Goods</div>
+    <p style="font-family: var(--serif); font-size: 0.95rem; font-style: italic; color: var(--cream-30); line-height: 1.8; margin-bottom: 32px;">Rooted in heritage and crafted with intention.</p>
+    <span class="footer-copy">&copy; ${new Date().getFullYear()} Mercado Goods. All rights reserved.</span>
+  </footer>
+</body>
+</html>`;
+}
+
+function renderSectionPreview(section) {
+  const c = section.config;
+  switch (section.type) {
+    case 'hero':
+      return `
+        <section class="hero" style="min-height: ${c.min_height || 80}vh;">
+          <div class="hero-bg">
+            ${c.background_image ? `<img src="${escapeAttr(c.background_image)}" alt="">` : '<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);"></div>'}
+          </div>
+          <div class="hero-overlay" style="background: linear-gradient(180deg, rgba(10,10,10,${(c.overlay_darkness||50)*0.01*0.6}) 0%, rgba(10,10,10,${(c.overlay_darkness||50)*0.01}) 100%);"></div>
+          <div class="hero-content" style="text-align: ${c.text_align || 'left'}; ${c.text_align === 'center' ? 'margin:0 auto;' : ''}">
+            <h1 class="hero-title">${escapeHtml(c.headline || '')}</h1>
+            <p class="hero-subtitle">${escapeHtml(c.subtitle || '')}</p>
+            ${c.button_text ? `<div class="hero-cta"><a href="${escapeAttr(c.button_link || '#')}">${escapeHtml(c.button_text)}</a></div>` : ''}
+          </div>
+        </section>`;
+
+    case 'product_grid':
+      const cols = c.columns || 3;
+      const products = [
+        { name: 'La Camisa Blanca', detail: '100% US-grown cotton tee', price: '$50.00', img: 'https://mercado-goods.com/cdn/shop/files/ambermilla204779-R1-023-10.jpg?v=1771633559&width=800', status: 'available' },
+        { name: 'La Sudadera Negra', detail: 'Oversized sweatshirt', price: '$90.00', img: 'https://mercado-goods.com/cdn/shop/files/ambermilla204779-R1-039-18.jpg?v=1771633613&width=800', status: 'sold_out' },
+        { name: 'El Gaban', detail: 'Handmade raw selvedge denim poncho', price: '$150.00', img: 'https://mercado-goods.com/cdn/shop/files/IMG_0435.jpg?v=1771633732&width=800', status: 'sold_out' },
+        { name: 'La Tote Bag', detail: 'Handcrafted tote', price: '$250.00', img: 'https://mercado-goods.com/cdn/shop/files/DSC_0314.jpg?v=1771724386&width=800', status: 'sold_out' },
+      ];
+      const maxP = c.max_products || 4;
+      const filteredProducts = products.slice(0, maxP).filter(p => c.filter === 'available' ? p.status === 'available' : true);
+      return `
+        <section class="products-section" id="shop">
+          <div class="section-label">The Collection</div>
+          <div class="section-title">Every Piece, Intentional</div>
+          <div class="products-grid" style="grid-template-columns: repeat(${cols}, 1fr);">
+            ${filteredProducts.map(p => `
+              <div class="product-card">
+                <div class="product-image-wrap">
+                  <img src="${p.img}" alt="${p.name}" loading="lazy">
+                  ${c.show_badge && p.status === 'sold_out' ? '<div class="product-badge">Sold Out</div>' : ''}
+                </div>
+                <div class="product-info">
+                  <div class="product-name">${p.name}</div>
+                  ${c.show_price ? `<div class="product-price">${p.price}</div>` : ''}
+                  ${c.show_add_to_cart ? `<button class="product-btn">${p.status === 'sold_out' ? 'Sold Out' : 'Add to Cart'}</button>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>`;
+
+    case 'text_block':
+      const padMap = { small: '40px 80px', medium: '80px', large: '120px 80px' };
+      return `
+        <section class="text-block-section" style="padding: ${padMap[c.padding] || '80px'}; background: ${c.background_color || '#0a0a0a'}; color: ${c.text_color || '#f5eedd'};">
+          <div class="text-block-inner ${c.max_width || 'medium'}" style="text-align: ${c.text_align || 'left'};">
+            ${(c.content || '').split('\n').map(p => p.trim() ? `<p>${escapeHtml(p)}</p>` : '').join('')}
+          </div>
+        </section>`;
+
+    case 'image_text':
+      const imgFirst = c.image_position !== 'right';
+      const imgBlock = `<div class="it-image">${c.image ? `<img src="${escapeAttr(c.image)}" alt="">` : '<div style="width:100%;height:100%;min-height:400px;background:var(--cream-04);"></div>'}</div>`;
+      const textBlock = `
+        <div class="it-text">
+          <div class="section-label">Our Story</div>
+          <div class="it-headline">${escapeHtml(c.headline || '')}</div>
+          <div class="section-line"></div>
+          <p class="it-body">${escapeHtml(c.body || '')}</p>
+          ${c.button_text ? `<a href="${escapeAttr(c.button_link || '#')}" class="it-btn">${escapeHtml(c.button_text)}</a>` : ''}
+        </div>`;
+      return `<section class="image-text-section" id="story" style="padding:0;">${imgFirst ? imgBlock + textBlock : textBlock + imgBlock}</section>`;
+
+    case 'blog_posts':
+      const posts = [
+        { title: "Why's Our Last Showcase So Special?", date: 'May 2025', excerpt: 'A labor of love \u2014 the story behind our most meaningful event yet.', img: 'https://mercado-goods.com/cdn/shop/articles/ONE_Final_HUrrah-2.png?v=1747258478&width=600' },
+        { title: 'The Media Luna Interview', date: 'Jan 2025', excerpt: 'A conversation about community, creativity, and building something bigger.', img: 'https://mercado-goods.com/cdn/shop/articles/Media_Luna.png?v=1736796582&width=600' },
+        { title: 'Why Perfection Sucks', date: 'Sep 2024', excerpt: 'On creative block, embracing imperfection, and finding freedom.', img: 'https://mercado-goods.com/cdn/shop/articles/Perfection.png?v=1725278368&width=600' },
+      ];
+      const blogPosts = posts.slice(0, c.count || 3);
+      const isGrid = c.layout !== 'list';
+      return `
+        <section class="blog-section" id="journal">
+          <div class="section-label">The Journal</div>
+          <div class="section-title">Stories Behind the Work</div>
+          <div class="blog-grid ${isGrid ? '' : 'blog-list'}" style="grid-template-columns: repeat(${isGrid ? Math.min(blogPosts.length, 3) : 1}, 1fr);">
+            ${blogPosts.map(p => `
+              <a href="#" class="blog-card">
+                ${c.show_image ? `<div class="blog-image"><img src="${p.img}" alt="${p.title}" loading="lazy"></div>` : ''}
+                <div>
+                  ${c.show_date ? `<div class="blog-date">${p.date}</div>` : ''}
+                  <div class="blog-title">${p.title}</div>
+                  ${c.show_excerpt ? `<div class="blog-excerpt">${p.excerpt}</div>` : ''}
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        </section>`;
+
+    case 'newsletter':
+      return `
+        <section class="newsletter-section" id="contact">
+          <div class="section-label">Stay Connected</div>
+          <div class="section-title" style="max-width: 500px; margin: 0 auto;">${escapeHtml(c.heading || 'Join the Community')}</div>
+          <p style="font-family: var(--serif); font-style: italic; color: var(--cream-30); margin-top: 16px;">${escapeHtml(c.description || '')}</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault();">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">${escapeHtml(c.button_text || 'Subscribe')}</button>
+          </form>
+        </section>`;
+
+    case 'featured_product':
+      const fp = { name: 'La Camisa Blanca', price: '$50.00', img: 'https://mercado-goods.com/cdn/shop/files/ambermilla204779-R1-023-10.jpg?v=1771633559&width=800', detail: '100% US-grown Pima cotton. Screen-printed by hand.' };
+      return `
+        <section class="featured-section">
+          <div class="featured-inner ${c.layout === 'stacked' ? 'stacked' : 'side-by-side'}">
+            <div class="featured-image"><img src="${fp.img}" alt="${fp.name}"></div>
+            <div>
+              <div class="section-label">Featured</div>
+              <div class="section-title">${fp.name}</div>
+              <p style="font-family: var(--serif); font-style: italic; color: var(--cream-50); line-height: 1.8; margin-bottom: 20px;">${fp.detail}</p>
+              <div class="product-price">${fp.price}</div>
+              <button class="product-btn" style="max-width: 300px;">Add to Cart</button>
+            </div>
+          </div>
+        </section>`;
+
+    case 'announcement':
+      return `
+        <div class="announcement-bar" style="background: ${c.background_color || '#cb6305'}; color: ${c.text_color || '#0a0a0a'};">
+          ${c.link_url ? `<a href="${escapeAttr(c.link_url)}">${escapeHtml(c.message || '')}</a>` : escapeHtml(c.message || '')}
+          ${c.dismissible ? '<button class="announcement-dismiss">\u2715</button>' : ''}
+        </div>`;
+
+    case 'gallery':
+      const images = c.images || [];
+      const gapMap = { small: '4px', medium: '12px', large: '24px' };
+      const arMap = { square: '1/1', '4:3': '4/3', '3:2': '3/2', auto: 'auto' };
+      return `
+        <section class="gallery-section">
+          <div class="gallery-grid" style="grid-template-columns: repeat(${c.columns || 3}, 1fr); gap: ${gapMap[c.gap] || '12px'};">
+            ${images.length > 0 ? images.map(img => `
+              <div style="overflow:hidden; ${c.aspect_ratio !== 'auto' ? `aspect-ratio: ${arMap[c.aspect_ratio] || '1/1'};` : ''}">
+                <img src="${escapeAttr(img)}" alt="" style="width:100%; height:100%; object-fit:cover;">
+              </div>
+            `).join('') : `
+              ${[1,2,3,4,5,6].slice(0, (c.columns||3)*2).map(() => `
+                <div style="aspect-ratio: ${arMap[c.aspect_ratio] || '1/1'}; background: var(--cream-04); display:flex; align-items:center; justify-content:center; color: var(--cream-15); font-size: 2rem;">\u{1F5BC}\uFE0F</div>
+              `).join('')}
+            `}
+          </div>
+        </section>`;
+
+    case 'testimonial':
+      return `
+        <section class="testimonial-section">
+          <div class="testimonial-quote">${escapeHtml(c.quote || '')}</div>
+          <div class="testimonial-name">${escapeHtml(c.attribution_name || '')}</div>
+          <div class="testimonial-role">${escapeHtml(c.attribution_title || '')}</div>
+        </section>`;
+
+    case 'stats':
+      const items = c.items || [];
+      return `
+        <section class="stats-section">
+          ${items.map(item => `
+            <div class="stat-item">
+              <div class="stat-number">${escapeHtml(item.number || '0')}</div>
+              <div class="stat-label">${escapeHtml(item.label || '')}</div>
+            </div>
+          `).join('')}
+        </section>`;
+
+    case 'divider':
+      return `
+        <section class="divider-section" style="padding: ${(c.height||40)/2}px 80px;">
+          ${c.style === 'line' ? `<div class="divider-line" style="background: ${c.color || '#cb6305'};"></div>` : ''}
+          ${c.style === 'dots' ? `<div class="divider-dots"><span style="background:${c.color||'#cb6305'};"></span><span style="background:${c.color||'#cb6305'};"></span><span style="background:${c.color||'#cb6305'};"></span></div>` : ''}
+          ${c.style === 'space' ? '' : ''}
+        </section>`;
+
+    case 'custom_html':
+      return `<section class="custom-html-section">${c.html_content || ''}</section>`;
+
+    default:
+      return `<section style="padding: 40px; text-align:center; color: var(--cream-30);">Unknown section type: ${section.type}</section>`;
+  }
+}
+
+// ===== OPEN PREVIEW =====
+function openPreview() {
+  // Build the preview HTML and open it in a new tab
+  const previewHtml = buildPreviewHtml();
+  const blob = new Blob([previewHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+// ===== TOAST NOTIFICATIONS =====
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+
+  const icons = { success: '\u2713', error: '\u2717', info: '\u2139\uFE0F' };
+  toast.innerHTML = `<span class="toast-icon">${icons[type] || ''}</span><span>${escapeHtml(message)}</span>`;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===== UTILITY FUNCTIONS =====
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function escapeAttr(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+    e.preventDefault();
+    undoAction();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveAll();
+  }
+  if (e.key === 'Escape') {
+    if (document.getElementById('settingsMode').style.display !== 'none' ||
+        document.getElementById('templatesMode').style.display !== 'none') {
+      showSections();
+    }
+  }
+});
+
+// ===== PAGE SELECTOR =====
+document.getElementById('pageSelector').addEventListener('change', (e) => {
+  state.currentPage = e.target.value;
+  state.editingSectionId = null;
+  showSections();
+  loadSections();
+});
+
+// ===== IFRAME LOAD =====
+document.getElementById('previewIframe').addEventListener('load', () => {
+  document.getElementById('previewLoading').classList.add('hidden');
+});
+
+// ===== WARN BEFORE UNLOAD =====
+window.addEventListener('beforeunload', (e) => {
+  if (state.isDirty) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+// ===== INIT =====
+loadSections();
+
+// Initial preview render with a short delay to let sections load
+setTimeout(() => {
+  refreshPreview();
+}, 500);
+
+</script>
+
+</body>
+</html>
