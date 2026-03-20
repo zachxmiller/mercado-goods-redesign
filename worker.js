@@ -1588,7 +1588,12 @@ DB TABLES: products, orders, blog_posts, subscribers, admin_users, page_sections
 
 Product sizes: S/M/L/XL/2XL/3XL/One Size. Statuses: active/draft/sold_out.
 
-RULES: Always use tools to make changes. Never tell user to go elsewhere. Be concise. Confirm what you did.`;
+IMPORTANT RULES:
+- For color changes, use update_site_settings (changes primary_color, background_color, text_color). This is INSTANT — the storefront reads these from the API dynamically. Do NOT edit HTML files for color changes.
+- For content changes (products, blog, settings, sections), use the database tools. These are INSTANT.
+- Only use edit_site_file for structural HTML/CSS changes (layout, new sections, fonts, etc). These require a redeploy to go live.
+- Always use tools to make changes. Never tell user to go elsewhere.
+- Be concise. Confirm what you did.`;
 
 const AI_TOOLS = [
   {
